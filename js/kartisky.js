@@ -217,7 +217,7 @@ var game = function (forPlayer1, forPlayer2) {
                             clearInterval(interval);
                             succesCallBackFunction(location[0], locationToMove[0]);
                         } else if (locationToMove != null && location != null) {
-                            console.log(virtualBattleField[location[0][0]][location[0][1]].card )
+                            console.log(virtualBattleField[location[0][0]][location[0][1]].card)
                             //console.log(locationToMove[0][1] + " " + locationToMove[0][1] + " " + virtualBattleField[1][1].card)
                             //console.log(typeof virtualBattleField[[locationToMove[0][0]][locationToMove[0][1]].card + " " + typeof virtualBattleField[location[0][0]][location[0][1]].card)
                         }
@@ -403,9 +403,32 @@ var game = function (forPlayer1, forPlayer2) {
         }
     }
     this.do = {
+        removeFromBattleField: function (battleField, toRemove) {
+            if (Array.isArray(battleField) && typeof toRemove == "object") {
+                if (toRemove.type == "coordinates") {
+                    battleField[toRemove.coordinates[0]][toRemove.coordinates[1]].card = null;
+                    battleField[toRemove.coordinates[0]][toRemove.coordinates[1]].owner = null;
+                    return battleField;
+                } else if (toRemove.type == "byCard") {
+
+                }
+
+
+            } else {
+                return battleField;
+            }
+        },
+        addToBattleField: function (battleField, toAdd) {
+            if (Array.isArray(battleField) && typeof toAdd == "object") {
+                battleField[toAdd.coordinates[0]][toAdd.coordinates[1]].card = toAdd.card;
+                battleField[toAdd.coordinates[0]][toAdd.coordinates[1]].owner = toAdd.owner;
+            } else {
+                return battleField;
+            }
+        },
         formatVirtualBattlefield: function (battleField) {
             battleField.forEach(function (subField, index) {
-                for (var i = 0; subField.length > i; i++){
+                for (var i = 0; subField.length > i; i++) {
                     //alert(i + " " + index)
                     subField[i] = {};
                     subField[i].card = null;
