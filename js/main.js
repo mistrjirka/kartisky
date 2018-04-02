@@ -88,13 +88,9 @@ var nations = [{
 var battleField = [
     [
         [
-            {
-                card: nations[0][0],
-                player: "player1"
-            }
+
         ],
         [
-
         ],
         [
 
@@ -182,9 +178,12 @@ console.log(newGame.do.editVirtualBattleField(battleField, [{
     }
 }]))
 */
+battleField = newGame.do.formatVirtualBattlefield(battleField);
+battleField[0][0].card = "nothing"
+alert(battleField);
 newGame.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "100px", "100px", "100px", "100px");
-newGame.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a) {
-    alert(a)
+newGame.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a,b) {
+    alert(a + " " + b);
 }, function () {
     alert("hehe")
 })

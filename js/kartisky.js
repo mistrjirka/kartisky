@@ -206,8 +206,7 @@ var game = function (forPlayer1, forPlayer2) {
                         }
                         wereSelectedInLocation = location;
                         wereSelectedInLocationToMove = locationToMove;
-
-                        if (accept == true && location != null && locationToMove != null && typeof virtualBattleField[0][location[0][0]][location[0][1]] != "undefined" && typeof virtualBattleField[0][locationToMove[0][0]][locationToMove[0][1]] == "undefined") {
+                        if (accept == true && location != null && locationToMove != null && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
                             for (var i = 0; i < visualBattleField.rows.length; i++) {
                                 for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
                                     visualBattleField.rows[i].cells[j].setAttribute("name", "unchecked");
@@ -216,12 +215,13 @@ var game = function (forPlayer1, forPlayer2) {
                                 }
                             }
                             clearInterval(interval);
-                            succesCallBackFunction(location[0], location[0]);
+                            succesCallBackFunction(location[0], locationToMove[0]);
                         } else if (locationToMove != null && location != null) {
-
-                            console.log(typeof virtualBattleField[0][locationToMove[0][0]][locationToMove[0][1]] + " " + typeof virtualBattleField[0][location[0][0]][location[0][1]])
+                            console.log(virtualBattleField[location[0][0]][location[0][1]].card )
+                            //console.log(locationToMove[0][1] + " " + locationToMove[0][1] + " " + virtualBattleField[1][1].card)
+                            //console.log(typeof virtualBattleField[[locationToMove[0][0]][locationToMove[0][1]].card + " " + typeof virtualBattleField[location[0][0]][location[0][1]].card)
                         }
-
+                        accept = false;
                         timeOutTime += 1;
                         if (timeOutTime > timeOut) {
                             for (var i = 0; i < visualBattleField.rows.length; i++) {
@@ -403,6 +403,17 @@ var game = function (forPlayer1, forPlayer2) {
         }
     }
     this.do = {
+        formatVirtualBattlefield: function (battleField) {
+            battleField.forEach(function (subField, index) {
+                for (var i = 0; subField.length > i; i++){
+                    //alert(i + " " + index)
+                    subField[i] = {};
+                    subField[i].card = null;
+                    subField[i].owner = null;
+                };
+            });
+            return battleField
+        },
         createBattlefield: function (dimensions, element, id, widthRow, heightRow, widthCell, heightCell) {
             if (Array.isArray(dimensions) == true && typeof widthRow == "string" && typeof heightRow == "string" && typeof widthCell == "string" && typeof heightCell == "string" && typeof element == "object" && typeof id == "string") {
                 var table = document.createElement("table");
@@ -437,9 +448,8 @@ var game = function (forPlayer1, forPlayer2) {
                 return "Wrong value Type... virtual BattleField have to be Array!!!";
             }
         },
-        attack: function(battleField, attacker, sacrifice){
-            
+        attack: function (battleField, attacker, sacrifice) {
+
         }
     }
 }
-
