@@ -10,37 +10,27 @@ function findIndex(array, item) {
 function async ( /**/ ) {
     var interval;
     var time;
-    var timeOutCallBack;
     var args = arguments;
-    if (typeof args[0] == "number" && typeof args[1] == "number" && typeof args[2] == "function") {
+    if (typeof args[0] == "number" && typeof args[1] == "number") {
         time = args[0];
         interval = args[1]
-        timeOutCallBack = args[2]
-    } else {
-        Error("wrong arguments")
     }
     var timeWatchdog = 0;
-
-    var interval = setInterval(function () {
-        for (var i = 0; i < args.length; i++) {
-            if (i != 0 && i != 1 && i != 2) {
-                if (typeof args[i] == "function") {
-                    if (args[i]() == true) {
-                        clearInterval(interval);
-                    }
-                }
+    setInterval(function(){
+    for (var i = 0; i < args.length; i++) {
+        if (i != 0 || i != 1) {
+            if (typeof args[i] == "function") {
+                
             }
         }
-
-        if (time <= timeWatchdog) {
-            clearInterval(interval);
-            timeOutCallBack()
-        } else {
-            timeWatchdog = timeWatchdog + 1;
+    }
+        if(time <= timeWatchdog){
+            
+        }else{
+            
         }
     }, interval)
 }
-
 if (Array.prototype.equals)
     console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
 // attach the .equals method to Array's prototype to call it on any array
