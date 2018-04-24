@@ -204,11 +204,26 @@ var game = function (forPlayer1, forPlayer2) {
                     }
                     return tmp2;
                 }
-                
+
                 var confirmed = false;
+
+                function toRemove2() {
+                    confirmed = true;
+                }
+                acceptButton.addEventListener("click", toRemove2)
                 var position = null;
                 var positionHistory = null;
-                async (timeOut, 33, timeOutCallBackFunction, function () {
+                async (timeOut, 33, function () {
+                        for (var i = 0; i < tmp1.position.cells.length; i++) {
+                            tmp1.position.cells[i].removeEventListener("click", toRemove);
+                            acceptButton.removeEventListener("click", toRemove2);
+                            tmp1.position.cells[i].style.backgroundColor = "";
+                            tmp1.position.cells[i].setAttribute("name", "unchecked");
+
+                        }
+                        timeOutCallBackFunction()
+                    },
+                    function () {
                         position = getPosition();
                         if (position != null && positionHistory != null) {
                             if (position.length > 1) {
@@ -225,7 +240,17 @@ var game = function (forPlayer1, forPlayer2) {
                         }
                     },
                     function () {
-                        
+                        if (position.length == 1 && confirmed == true) {
+                            succesCallBackFunction(position[0]);
+                            for (var i = 0; i < tmp1.position.cells.length; i++) {
+                                tmp1.position.cells[i].removeEventListener("click", toRemove);
+                                acceptButton.removeEventListener("click", toRemove2);
+                                tmp1.position.cells[i].style.backgroundColor = "";
+                                tmp1.position.cells[i].setAttribute("name", "unchecked");
+
+                            }
+                            return true;
+                        }
                     }
                 );
             }
