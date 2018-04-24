@@ -16,29 +16,29 @@ function async ( /**/ ) {
         time = args[0];
         interval = args[1]
         timeOutCallBack = args[2]
-    } else {
-        Error("wrong arguments")
-    }
-    var timeWatchdog = 0;
-
-    var interval = setInterval(function () {
-        for (var i = 0; i < args.length; i++) {
-            if (i != 0 && i != 1 && i != 2) {
-                if (typeof args[i] == "function") {
-                    if (args[i]() == true) {
-                        clearInterval(interval);
+        var timeWatchdog = 0;
+        var interval = setInterval(function () {
+            for (var i = 0; i < args.length; i++) {
+                if (i != 0 && i != 1 && i != 2) {
+                    if (typeof args[i] == "function") {
+                        if (args[i](timeWatchdog) == true) {
+                            clearInterval(interval);
+                        }
                     }
                 }
             }
-        }
 
-        if (time <= timeWatchdog) {
-            clearInterval(interval);
-            timeOutCallBack();
-        } else {
-            timeWatchdog = timeWatchdog + 1;
-        }
-    }, interval)
+            if (time <= timeWatchdog) {
+                clearInterval(interval);
+                timeOutCallBack();
+            } else {
+                timeWatchdog = timeWatchdog + 1;
+            }
+        }, interval)
+    } else {
+        console.error("wrong arguments")
+    }
+
 }
 
 if (Array.prototype.equals)
@@ -157,9 +157,8 @@ var game = function (forPlayer1, forPlayer2) {
                 j++;
             }, intervalTime)
         },
-        playerCardPlacement: function (mode, virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction, timeCallBack) {
-            if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof owner == "string" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
-
+        playerCardPlacement: function (mode, virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction, timeCallBackFunction) {
+            if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof owner == "string" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallBackFunction == "function") {
                 var modes = [
                     {
                         type: "top",
@@ -170,12 +169,12 @@ var game = function (forPlayer1, forPlayer2) {
                         position: visualBattleField.rows[visualBattleField.rows.length - 1]
                     }
                 ];
-                
-                function toRemove(){
-                    if(this.getAttribute("name") == "unchecked"){
+
+                function toRemove() {
+                    if (this.getAttribute("name") == "unchecked") {
                         this.setAttribute("name", "checked");
                         this.style.backgroundColor = "red";
-                    }else{
+                    } else {
                         this.setAttribute("name", "unchecked");
                         this.style.backgroundColor = "";
                     }
@@ -187,14 +186,48 @@ var game = function (forPlayer1, forPlayer2) {
                             for (var j = 0; modes[i].position.cells.length > j; j++) {
                                 modes[i].position.cells[j].setAttribute("name", "unchecked")
                                 modes[i].position.cells[j].addEventListener("click", toRemove)
+
                             }
+                            return modes[i];
                         }
                     }
                 }
-                doByMode(modes, mode)
-                function getPosition() {
+                var tmp1 = doByMode(modes, mode);
 
+                function getPosition() {
+                    var tmp2 = [];
+
+                    for (var i = 0; i < tmp1.position.cells.length; i++) {
+                        if (tmp1.position.cells[i].getAttribute("name") == "checked") {
+                            tmp2.push(i);
+                        }
+                    }
+                    return tmp2;
                 }
+                
+                var confirmed = false;
+                var position = null;
+                var positionHistory = null;
+                async (timeOut, 33, timeOutCallBackFunction, function () {
+                        position = getPosition();
+                        if (position != null && positionHistory != null) {
+                            if (position.length > 1) {
+                                console.log(positionHistory[0])
+                                tmp1.position.cells[positionHistory[0]].setAttribute("name", "unchecked");
+                                tmp1.position.cells[positionHistory[0]].style.backgroundColor = "";
+                            }
+                        }
+                        positionHistory = position;
+                    },
+                    function (a) {
+                        if (typeof timeCallBackFunction == "function") {
+                            timeCallBackFunction(a);
+                        }
+                    },
+                    function () {
+                        
+                    }
+                );
             }
         },
         playersMinionMovement: function (virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction) {
