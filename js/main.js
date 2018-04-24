@@ -179,11 +179,14 @@ console.log(newGame.do.editVirtualBattleField(battleField, [{
 }]))
 */
 battleField = newGame.do.formatVirtualBattlefield(battleField);
-battleField[0][0].card = "nothing"
-alert(battleField);
+battleField[0][0].card = "nothing";
+
+
 newGame.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "100px", "100px", "100px", "100px");
-newGame.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a,b) {
+newGame.get.playerCardPlacement("top", battleField, document.getElementById("is"), "player", document.getElementById("butt"), 1000,function(){})
+/*newGame.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a,b) {
     alert(a + " " + b);
 }, function () {
     alert("hehe")
 })
+*/

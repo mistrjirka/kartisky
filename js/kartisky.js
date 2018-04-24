@@ -34,7 +34,7 @@ function async ( /**/ ) {
 
         if (time <= timeWatchdog) {
             clearInterval(interval);
-            timeOutCallBack()
+            timeOutCallBack();
         } else {
             timeWatchdog = timeWatchdog + 1;
         }
@@ -157,9 +157,44 @@ var game = function (forPlayer1, forPlayer2) {
                 j++;
             }, intervalTime)
         },
-        playerCardPlacement: function (virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction) {
-            if (Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof owner == "string" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
+        playerCardPlacement: function (mode, virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction, timeCallBack) {
+            if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof owner == "string" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
 
+                var modes = [
+                    {
+                        type: "top",
+                        position: visualBattleField.rows[0]
+                    },
+                    {
+                        type: "bottom",
+                        position: visualBattleField.rows[visualBattleField.rows.length - 1]
+                    }
+                ];
+                
+                function toRemove(){
+                    if(this.getAttribute("name") == "unchecked"){
+                        this.setAttribute("name", "checked");
+                        this.style.backgroundColor = "red";
+                    }else{
+                        this.setAttribute("name", "unchecked");
+                        this.style.backgroundColor = "";
+                    }
+                }
+
+                function doByMode(modes, mode) {
+                    for (var i = 0; modes.length > i; i++) {
+                        if (modes[i].type == mode) {
+                            for (var j = 0; modes[i].position.cells.length > j; j++) {
+                                modes[i].position.cells[j].setAttribute("name", "unchecked")
+                                modes[i].position.cells[j].addEventListener("click", toRemove)
+                            }
+                        }
+                    }
+                }
+                doByMode(modes, mode)
+                function getPosition() {
+
+                }
             }
         },
         playersMinionMovement: function (virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction) {
