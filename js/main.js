@@ -4,6 +4,7 @@ var nations = [{
 
     },
     cards: [{
+        name: "warior 1",
         price: 75,
         amount: 10,
         statistics: {
@@ -20,6 +21,7 @@ var nations = [{
         },
         upgrade: null
     }, {
+        name: "archer 1",
         price: 55,
         amount: 15,
         statistics: {
@@ -36,6 +38,7 @@ var nations = [{
 
         }
     }, {
+        name: "balista 1",
         price: 150,
         amount: 3,
         statistics: {
@@ -52,6 +55,7 @@ var nations = [{
         },
         upgrade: null
     }, {
+        name: "lancer 1",
         price: 75,
         amount: 10,
         statistics: {
@@ -68,6 +72,7 @@ var nations = [{
         },
         upgrade: null
     }, {
+        name: "cavalry 1",
         price: 90,
         amount: 10,
         statistics: {
@@ -179,11 +184,28 @@ console.log(newGame.do.editVirtualBattleField(battleField, [{
 }]))
 */
 battleField = newGame.do.formatVirtualBattlefield(battleField);
-battleField[0][0].card = "nothing";
+battleField[0][0].owner = "pl1";
+battleField[0][1].owner = "pl1";
+battleField[0][3].owner = "pl1";
+battleField[0][2].owner = "pl1";
 
+battleField[1][0].owner = "pl2";
+battleField[1][1].owner = "pl2";
+battleField[1][3].owner = "pl2";
+battleField[1][2].owner = "pl2";
 
 newGame.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "100px", "100px", "100px", "100px");
-newGame.get.playerCardPlacement("top", battleField, document.getElementById("is"), "player", document.getElementById("butt"), 1000,function(){alert("haha")},function(){alert("ahoj")})
+
+newGame.do.attack(battleField, document.getElementById("is"), "pl1", "pl2", 1000, function () {
+    alert("jo");
+}, function () {
+    alert("nope")
+})
+/*newGame.get.playerCardPlacement("top", battleField, document.getElementById("is"), "player", document.getElementById("butt"), 1000, function () {
+    alert("haha")
+}, function () {
+    alert("ahoj")
+})
 /*newGame.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a,b) {
     alert(a + " " + b);
 }, function () {
