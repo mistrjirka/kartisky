@@ -103,14 +103,19 @@ var game = function (forPlayer1, forPlayer2) {
     }
 
     this.get = {
-        playersCardMove: function (intervalTime, time, element, succesCallBackfun, timeOutCallBackFun, timeCallBackFun) {
+        playerDisplayCards: function () {
+
+        },
+        playerCardMove: function (time, element, succesCallBackfun, timeOutCallBackFun, timeCallBackFun) {
             if (typeof intervalTime != "number" && typeof time != "number" && typeof element != "object" && typeof succesCallBackfun == "function") {
                 return "Wrong value format: interval Time:" + typeof intervalTime + "and have to be number, time: " + typeof time + "and have to be number, element: " + typeof element + "and have to be object/element, Succes CallBack function: " + typeof succesCallBackfun + "and have to be object/function...";
             }
-            var clicked = false;
-            document.getElementById(element.button).addEventListener("click", function () { //todo
+
+            function toRemove() { //todo
                 clicked = true;
-            });
+            }
+            var clicked = false;
+            document.getElementById(element.button).addEventListener("click", toRemove);
             var timeOutFun = false;
             if (typeof timeOutCallBackFun == "function") {
                 timeOutFun = true;
@@ -121,9 +126,9 @@ var game = function (forPlayer1, forPlayer2) {
             }
             var wereActive = [];
             var j = 0;
+            var list = document.getElementsByClassName(element.class); //todo
+            var active = [];
             var interval = setInterval(function () {
-                var active = [];
-                var list = document.getElementsByClassName(element.class); //todo
                 for (var i = 0; i < list.length; i++) {
                     if (list[i].checked == true) {
                         active.push(list[i]);
@@ -136,25 +141,23 @@ var game = function (forPlayer1, forPlayer2) {
                 }
                 if (clicked == true) {
                     clearInterval(interval);
-                    document.getElementById(element.button).removeEventListener("click", function () {});
-
+                    document.getElementById(element.button).removeEventListener("click", toRemove);
                     succesCallBackfun(findIndex(list, active[0]));
                 }
                 wereActive = active;
                 if (j > time) {
                     if (timeOutFun == true) {
-                        document.getElementById(element.button).removeEventListener("click", function () {});
-
+                        document.getElementById(element.button).removeEventListener("click", toRemove);
                         timeOutCallBackFun();
                     }
                     clearInterval(interval);
                 }
                 if (timeFun == true) {
-                    document.getElementById(element.button).removeEventListener("click", function () {});
+                    document.getElementById(element.button).removeEventListener("click", toRemove);
                     timeCallBackFun(j);
                 }
                 j++;
-            }, intervalTime)
+            }, 33)
         },
         playerCardPlacement: function (mode, virtualBattleField, visualBattleField, owner, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction, notTaboo = [null], timeCallBackFunction) {
             if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof owner == "string" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallBackFunction == "function") {

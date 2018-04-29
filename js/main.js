@@ -159,12 +159,40 @@ var battleField = [
         ]
     ]
 ];
+
+
 var newGame = new game();
+
+var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
+var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
+
+function round(player) {
+    function getCards() {
+        newGame.get.playersCardMove(500, )
+    };
+
+    function getCardPlacement() {
+
+    };
+
+    function movement() {
+
+    };
+
+    function attack() {
+
+    };
+
+    getCards();
+};
+
+/*
 var player;
 player = newGame.add.player(newGame.get.cardsByNation("people", [0], nations));
+
 /*
 console.log(newGame.add.cardsTo(player, newGame.get.cardsByNation("people", "all", nations), document.getElementById("player1")))
-console.log(newGame.get.playersCardMove(70, 50, {
+console.log(newGame.get.playerCardMove(70, 50, {
     class: "cardsInHand",
     button: "butt"
 }, function (a) {
@@ -180,9 +208,9 @@ console.log(newGame.do.editVirtualBattleField(battleField, [{
     card: {
         owner: "player",
         card: newGame.get.cardsByNation("people", [0], nations)[0]
-    }
+    }0
 }]))
-*/
+
 battleField = newGame.do.formatVirtualBattlefield(battleField);
 battleField[0][0].owner = "pl1";
 battleField[0][1].owner = "pl1";
@@ -199,8 +227,9 @@ newGame.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "
 newGame.do.attack(battleField, document.getElementById("is"), "pl1", "pl2", 1000, function () {
     alert("jo");
 }, function () {
-    alert("nope")
-})
+    alert("nope");
+});
+
 /*newGame.get.playerCardPlacement("top", battleField, document.getElementById("is"), "player", document.getElementById("butt"), 1000, function () {
     alert("haha")
 }, function () {
@@ -211,4 +240,5 @@ newGame.do.attack(battleField, document.getElementById("is"), "pl1", "pl2", 1000
 }, function () {
     alert("hehe")
 })
+
 */
