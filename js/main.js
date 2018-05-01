@@ -160,33 +160,60 @@ var battleField = [
     ]
 ];
 
+var config = {
+    round: {
+        amountOfCards: 1,
+        money: 100,
+        timeOutForAction: 500
+    }
+}
 
 var newGame = new game();
 
 var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
 var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
-/*
-function round(player) {
+
+battleField = newGame.do.formatVirtualBattlefield(battleField);
+
+newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "100px", "100px", "100px", "100px");
+
+function round(player, place, confirmButton) {
+    player.cardPack = newGame.do.makeCardPack(player.cards);
+
+    function roundItems() {
+        player.hand.money += config.round.money;
+        player.hand.cards.push(player.cardPack[0]);
+        player.cardPack.shift();
+        getCards();
+    };
+
     function getCards() {
-        newGame.get.playersCardMove(500, )
+        console.log("getCards");
+        newGame.get.playerCardMove(500, {
+                id: place,
+                button: confirmButton
+            }, player,
+            getCardPlacement, movement);
     };
 
     function getCardPlacement() {
-
+        console.log("getCardsPlacement");
     };
 
     function movement() {
-
+        console.log("movement");
     };
 
     function attack() {
 
     };
-
-    getCards();
+    
+    roundItems();
 };
 
-*/
+
+round(player1, "player1", "butt")
+/*
 var player1;
 player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
 

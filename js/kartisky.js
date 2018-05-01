@@ -101,6 +101,7 @@ var game = function (forPlayer1, forPlayer2) {
             if (typeof cards == "object") {
                 return {
                     cards: cards,
+                    cardPack: [],
                     hand: {
                         money: 0,
                         cards: []
@@ -136,7 +137,7 @@ var game = function (forPlayer1, forPlayer2) {
             var checkboxList = document.createElement("ul");
             var li = document.createElement("li");
             for (var i = 0; player.hand.cards.length > i; i++) {
-                li.innerHTML = "<input type='checkbox' class= '"+ classOfCheckbox +"'>" + player.hand.cards[i].name + " class: " + player.hand.cards[i].statistics.class + " damage: " + player.hand.cards[i].statistics.attack + " life " + player.hand.cards[i].statistics.life;
+                li.innerHTML = "<input type='checkbox' class= '" + classOfCheckbox + "'>" + player.hand.cards[i].name + " class: " + player.hand.cards[i].statistics.class + " damage: " + player.hand.cards[i].statistics.attack + " life " + player.hand.cards[i].statistics.life;
                 checkboxList.appendChild(li);
                 li = document.createElement("li");
             }
@@ -618,6 +619,22 @@ var game = function (forPlayer1, forPlayer2) {
                 });
 
             }
+        },
+        makeCardPack: function (cards) {
+            var cardPack = [];
+            cards.forEach(function (item, index, arry) {
+                var tmp = Math.floor((Math.random() * cards.length) + 0);;
+                while (findIndex(cardPack, arry[tmp]) != null) {
+                    tmp = Math.floor((Math.random() * cards.length) + 0);
+                    if (findIndex(cardPack, arry[tmp]) != null) {
+
+                    }
+                }
+                cardPack.push(arry[tmp]);
+                console.log(cardPack);
+
+            });
+            return cardPack;
         }
     }
 }
