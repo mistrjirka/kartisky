@@ -165,7 +165,7 @@ var newGame = new game();
 
 var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
 var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
-
+/*
 function round(player) {
     function getCards() {
         newGame.get.playersCardMove(500, )
@@ -186,20 +186,21 @@ function round(player) {
     getCards();
 };
 
-/*
-var player;
-player = newGame.add.player(newGame.get.cardsByNation("people", [0], nations));
+*/
+var player1;
+player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
 
-/*
-console.log(newGame.add.cardsTo(player, newGame.get.cardsByNation("people", "all", nations), document.getElementById("player1")))
-console.log(newGame.get.playerCardMove(70, 50, {
-    class: "cardsInHand",
+player1.hand.cards = player1.cards;
+//console.log(newGame.add.cardsTo(player1, newGame.get.cardsByNation("people", "all", nations), document.getElementById("player2")))
+console.log(newGame.get.playerCardMove(500, {
+    id: "player1",
     button: "butt"
-}, function (a) {
+}, player1, function (a) {
     alert(a);
 }, function () {
     alert("sda");
 }));
+/*
 console.log(newGame.do.editVirtualBattleField(battleField, [{
     location: {
         x: 2,

@@ -7,6 +7,60 @@ function findIndex(array, item) {
     return null;
 }
 
+String.prototype.hashCode = function () {
+    var hash = 0;
+    if (this.length == 0) {
+        return hash;
+    }
+    for (var i = 0; i < this.length; i++) {
+        var char = this.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+if (Array.prototype.equals)
+    console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+// attach the .equals method to Array's prototype to call it on any array
+Array.prototype.equals = function (array) {
+    // if the other array is a falsy value, return
+    if (!array)
+        return false;
+
+    // compare lengths - can save a lot of time 
+    if (this.length != array.length)
+        return false;
+
+    for (var i = 0, l = this.length; i < l; i++) {
+        // Check if we have nested arrays
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!this[i].equals(array[i]))
+                return false;
+        } else if (this[i] != array[i]) {
+            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+            return false;
+        }
+    }
+    return true;
+}
+// Hide method from for-in loops
+Object.defineProperty(Array.prototype, "equals", {
+    enumerable: false
+});
+
+function makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+
 function async ( /**/ ) {
     var interval;
     var time;
@@ -40,36 +94,6 @@ function async ( /**/ ) {
     }
 
 }
-
-if (Array.prototype.equals)
-    console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
-// attach the .equals method to Array's prototype to call it on any array
-Array.prototype.equals = function (array) {
-    // if the other array is a falsy value, return
-    if (!array)
-        return false;
-
-    // compare lengths - can save a lot of time 
-    if (this.length != array.length)
-        return false;
-
-    for (var i = 0, l = this.length; i < l; i++) {
-        // Check if we have nested arrays
-        if (this[i] instanceof Array && array[i] instanceof Array) {
-            // recurse into the nested arrays
-            if (!this[i].equals(array[i]))
-                return false;
-        } else if (this[i] != array[i]) {
-            // Warning - two different object instances will never be equal: {x:20} != {x:20}
-            return false;
-        }
-    }
-    return true;
-}
-// Hide method from for-in loops
-Object.defineProperty(Array.prototype, "equals", {
-    enumerable: false
-});
 var game = function (forPlayer1, forPlayer2) {
 
     this.add = {
@@ -103,13 +127,24 @@ var game = function (forPlayer1, forPlayer2) {
     }
 
     this.get = {
-        playerDisplayCards: function () {
-
-        },
-        playerCardMove: function (time, element, succesCallBackfun, timeOutCallBackFun, timeCallBackFun) {
-            if (typeof intervalTime != "number" && typeof time != "number" && typeof element != "object" && typeof succesCallBackfun == "function") {
+        playerCardMove: function (time, element, player, succesCallBackfun, timeOutCallBackFun, timeCallBackFun) {
+            if (typeof time != "number" || typeof element != "object" || typeof succesCallBackfun != "function") {
                 return "Wrong value format: interval Time:" + typeof intervalTime + "and have to be number, time: " + typeof time + "and have to be number, element: " + typeof element + "and have to be object/element, Succes CallBack function: " + typeof succesCallBackfun + "and have to be object/function...";
             }
+            var idOfList = makeid().hashCode();
+            var classOfCheckbox = makeid();
+            var checkboxList = document.createElement("ul");
+            var li = document.createElement("li");
+            var x = document.createElement("INPUT");
+            x.setAttribute("type", "checkbox");
+            x.setAttribute("class", classOfCheckbox);
+            for (var i = 0; player.hand.cards.length > i; i++) {
+                li.appendChild(x);
+                li.appendChild(document.createTextNode(player.hand.cards[i].name));
+                checkboxList.appendChild(li);
+                li = document.createElement("li");
+            }
+            document.getElementById(element.id).appendChild(checkboxList);
 
             function toRemove() { //todo
                 clicked = true;
@@ -126,8 +161,12 @@ var game = function (forPlayer1, forPlayer2) {
             }
             var wereActive = [];
             var j = 0;
-            var list = document.getElementsByClassName(element.class); //todo
+            var list = document.getElementsByClassName(classOfCheckbox); //todo
             var active = [];
+
+            function removeElement() {
+                document.getElementById(element.id).removeChild(checkboxList);
+            }
             var interval = setInterval(function () {
                 for (var i = 0; i < list.length; i++) {
                     if (list[i].checked == true) {
@@ -139,14 +178,17 @@ var game = function (forPlayer1, forPlayer2) {
                         wereActive[i].checked = false;
                     }
                 }
-                if (clicked == true) {
+                if (clicked == true && active.length == 1) {
                     clearInterval(interval);
                     document.getElementById(element.button).removeEventListener("click", toRemove);
                     succesCallBackfun(findIndex(list, active[0]));
+                    removeElement();
+
                 }
                 wereActive = active;
                 if (j > time) {
                     if (timeOutFun == true) {
+                        removeElement();
                         document.getElementById(element.button).removeEventListener("click", toRemove);
                         timeOutCallBackFun();
                     }
@@ -156,6 +198,8 @@ var game = function (forPlayer1, forPlayer2) {
                     document.getElementById(element.button).removeEventListener("click", toRemove);
                     timeCallBackFun(j);
                 }
+                active = [];
+                clicked = false;
                 j++;
             }, 33)
         },
@@ -406,7 +450,7 @@ var game = function (forPlayer1, forPlayer2) {
                         }
                     }
                 }
-                return "Nation or cards weren't found..."
+                return "Nation or cards weren't found...";
             } else {
                 return "Wrong value type!!! nations" + typeof nations;
             }
@@ -576,6 +620,7 @@ var game = function (forPlayer1, forPlayer2) {
                     positionAttackerHistory = positionAttacker;
                     positionSacrificeHistory = positionSacrifice;
                 });
+
             }
         }
     }
