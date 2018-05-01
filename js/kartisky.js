@@ -135,12 +135,8 @@ var game = function (forPlayer1, forPlayer2) {
             var classOfCheckbox = makeid();
             var checkboxList = document.createElement("ul");
             var li = document.createElement("li");
-            var x = document.createElement("INPUT");
-            x.setAttribute("type", "checkbox");
-            x.setAttribute("class", classOfCheckbox);
             for (var i = 0; player.hand.cards.length > i; i++) {
-                li.appendChild(x);
-                li.appendChild(document.createTextNode(player.hand.cards[i].name));
+                li.innerHTML = "<input type='checkbox' class= '"+ classOfCheckbox +"'>" + player.hand.cards[i].name + " class: " + player.hand.cards[i].statistics.class + " damage: " + player.hand.cards[i].statistics.attack + " life " + player.hand.cards[i].statistics.life;
                 checkboxList.appendChild(li);
                 li = document.createElement("li");
             }
