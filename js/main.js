@@ -172,13 +172,15 @@ var newGame = new game();
 
 var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
 var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
-
+player1.home = "top";
+player2.home = "bottom"
 battleField = newGame.do.formatVirtualBattlefield(battleField);
 
 newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "100px", "100px", "100px", "100px");
 
 function round(player, place, confirmButton) {
     player.cardPack = newGame.do.makeCardPack(player.cards);
+    var cardsSelected = [];
 
     function roundItems() {
         player.hand.money += config.round.money;
@@ -193,11 +195,28 @@ function round(player, place, confirmButton) {
                 id: place,
                 button: confirmButton
             }, player,
-            getCardPlacement, movement);
+            function (a) {
+                cardsSelected.push({
+                    card: player.hand.cards[a],
+                    x: null,
+                    y: null
+                });
+
+            }, movement);
     };
 
     function getCardPlacement() {
         console.log("getCardsPlacement");
+        for (var i = 0; i < cardsSelected.length; i++) {
+            cardsSelected.forEach(function (element, index, arr) {
+                newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"), function (a, b) {
+                    battleField = newGame.do.editVirtualBattleField(battleField, [{
+                        card: element.card,
+                        locarion: [element.x, element.y]
+                    }])
+                })
+            }, alert)
+        }
     };
 
     function movement() {
@@ -207,12 +226,12 @@ function round(player, place, confirmButton) {
     function attack() {
 
     };
-    
+
     roundItems();
 };
 
 
-round(player1, "player1", "butt")
+round(player1, "player1", "butt");
 /*
 var player1;
 player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
@@ -240,19 +259,21 @@ console.log(newGame.do.editVirtualBattleField(battleField, [{
 }]))
 
 battleField = newGame.do.formatVirtualBattlefield(battleField);
-battleField[0][0].owner = "pl1";
-battleField[0][1].owner = "pl1";
-battleField[0][3].owner = "pl1";
-battleField[0][2].owner = "pl1";
+var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
+var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
+battleField[0][0].owner = player1.id;
+battleField[0][1].owner = player1.id;
+battleField[0][3].owner = player1.id;
+battleField[0][2].owner = player1.id;
 
-battleField[1][0].owner = "pl2";
-battleField[1][1].owner = "pl2";
-battleField[1][3].owner = "pl2";
-battleField[1][2].owner = "pl2";
+battleField[1][0].owner = player2.id;
+battleField[1][1].owner = player2.id;
+battleField[1][3].owner = player2.id;
+battleField[1][2].owner = player2.id;
 
 newGame.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "100px", "100px", "100px", "100px");
 
-newGame.do.attack(battleField, document.getElementById("is"), "pl1", "pl2", 1000, function () {
+newGame.do.attack(500, battleField, document.getElementById("is"), player2, player1,document.getElementById("butt"), function () {
     alert("jo");
 }, function () {
     alert("nope");
