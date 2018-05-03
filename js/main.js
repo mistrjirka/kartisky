@@ -201,33 +201,40 @@ function round(player, place, confirmButton) {
                     x: null,
                     y: null
                 });
+                getCardPlacement();
 
             }, movement);
     };
 
     function getCardPlacement() {
-        console.log("getCardsPlacement");
-        for (var i = 0; i < cardsSelected.length; i++) {
-            cardsSelected.forEach(function (element, index, arr) {
-                newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"), function (a, b) {
+        console.log("getCardsPlacement" + cardsSelected.length);
+
+        cardsSelected.forEach(function (element, index, arr) {
+            newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"),
+                function (a, b) {
+                    element.x = a;
+                    element.y = b;
                     battleField = newGame.do.editVirtualBattleField(battleField, [{
                         card: element.card,
-                        locarion: [element.x, element.y]
-                    }])
-                })
-            }, alert)
-        }
-    };
+                        location: {
+                            x: element.x,
+                            y: element.y
+                        }
+                    }], player)
+                    console.log(battleField);
+                }, alert);
+        });
+    }
 
     function movement() {
         console.log("movement");
-    };
+    }
 
     function attack() {
 
-    };
-
+    }
     roundItems();
+
 };
 
 

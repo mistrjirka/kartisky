@@ -202,8 +202,8 @@ var game = function (forPlayer1, forPlayer2) {
                 j++;
             }, 33)
         },
-        playerCardPlacement: function (timeOut, mode, virtualBattleField, visualBattleField, acceptButton, succesCallBackFunction, timeOutCallBackFunction, notTaboo = [null], timeCallBackFunction) {
-            if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallBackFunction == "function") {
+        playerCardPlacement: function (timeOut, mode, virtualBattleField, visualBattleField, acceptButton, succesCallBackFunction, timeOutCallbackFunction, notTaboo = [null], timeCallBackFunction) {
+            if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallbackFunction == "function") {
                 var modes = [
                     {
                         type: "top",
@@ -268,7 +268,7 @@ var game = function (forPlayer1, forPlayer2) {
                             tmp1.position.cells[i].setAttribute("name", "unchecked");
 
                         }
-                        timeOutCallBackFunction("time out");
+                        timeOutCallbackFunction("time out");
                     },
                     function () {
                         position = getPosition();
@@ -296,7 +296,7 @@ var game = function (forPlayer1, forPlayer2) {
                             }
                             for (var i = 0; i < notTaboo.length; i++) {
                                 if (virtualBattleField[row][position[0]].card == notTaboo[i]) {
-                                    succesCallBackFunction(position[0]);
+                                    succesCallBackFunction(position[0], row);
                                     for (var j = 0; j < tmp1.position.cells.length; j++) {
                                         tmp1.position.cells[j].removeEventListener("click", toRemove);
                                         acceptButton.removeEventListener("click", toRemove2);
@@ -309,7 +309,9 @@ var game = function (forPlayer1, forPlayer2) {
                             }
                         }
                     }
-                )
+                );
+            }else{
+                console.log(timeOutCallbackFunction)
             }
         },
         playersMinionMovement: function (virtualBattleField, visualBattleField, player, acceptButton, timeOut, succesCallBackFunction, timeOutCallBackFunction) {
@@ -514,10 +516,12 @@ var game = function (forPlayer1, forPlayer2) {
                 return "Wrong value Type... dimensions have to be Array!!!";
             }
         },
-        editVirtualBattleField: function (battleField, arrayOfChanges) {
-            if (typeof battleField == "object" && Array.isArray(arrayOfChanges) == true) {
+        editVirtualBattleField: function (battleField, arrayOfChanges, player) {
+            if (typeof battleField == "object" && Array.isArray(arrayOfChanges) == true && typeof player == "object") {
                 for (var i = 0; i < arrayOfChanges.length; i++) {
-                    battleField[arrayOfChanges[i].location.x][arrayOfChanges[i].location.y] = arrayOfChanges[i].card;
+                    console.log(arrayOfChanges[i].location.x);
+                    battleField[arrayOfChanges[i].location.x][arrayOfChanges[i].location.y].card = arrayOfChanges[i].card;
+                    battleField[arrayOfChanges[i].location.x][arrayOfChanges[i].location.y].owner = player.id;
                 }
                 return battleField;
             } else {
