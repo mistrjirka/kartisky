@@ -170,17 +170,19 @@ var config = {
 
 var newGame = new game();
 
-var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
-var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
+var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations), "hrac1");
+var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations), "hrac2");
 player1.home = "top";
-player2.home = "bottom"
+player2.home = "bottom";
 battleField = newGame.do.formatVirtualBattlefield(battleField);
 
-newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "100px", "100px", "100px", "100px");
+newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "200px", "100px", "200px", "100px");
+player1.cardPack = newGame.do.makeCardPack(player1.cards);
+player2.cardPack = newGame.do.makeCardPack(player2.cards);
 
 function round(player, place, confirmButton) {
-    player.cardPack = newGame.do.makeCardPack(player.cards);
     var cardsSelected = [];
+    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 
     function roundItems() {
         player.hand.money += config.round.money;
@@ -220,14 +222,34 @@ function round(player, place, confirmButton) {
                             x: element.x,
                             y: element.y
                         }
-                    }], player)
+                    }], player);
+                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
                     console.log(battleField);
+                    movement();
                 }, alert);
         });
+
     }
 
     function movement() {
         console.log("movement");
+        newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, document.getElementById("butt"), 500, function (a, b) {
+            var card = battleField[a[0]][a[1]].card;
+            battleField = newGame.do.removeFromBattleField(battleField, {
+                type: "coordinates",
+                coordinates: [a[1], a[0]]
+            });
+            console.log(battleField)
+            newGame.do.editVirtualBattleField(battleField, [{
+                card: card,
+                location: {
+                    x: b[1],
+                    y: b[0]
+                }
+        }], player);
+            newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+
+        }, alert);
     }
 
     function attack() {

@@ -97,11 +97,11 @@ function async ( /**/ ) {
 var game = function (forPlayer1, forPlayer2) {
 
     this.add = {
-        player: function (cards) {
+        player: function (cards, id = makeid()) {
             if (typeof cards == "object") {
                 return {
                     home: null,
-                    id: makeid(),
+                    id: id,
                     cards: cards,
                     cardPack: [],
                     hand: {
@@ -122,7 +122,7 @@ var game = function (forPlayer1, forPlayer2) {
             if (typeof element == "object") {
                 var val = "";
                 for (var i = 0; cards.length > i; i++) {
-                    val = val + "<br><input type='checkbox' class= 'cardsInHand' id = 'card" + i + "'> class: " + cards[i].statistics.class + " damage: " + cards[i].statistics.attack + " life: " + cards[i].statistics.life;
+                    val = val + "<input type='checkbox' class= 'cardsInHand' id = 'card" + i + "'> class: " + cards[i].statistics.class + " damage: " + cards[i].statistics.attack + " life: " + cards[i].statistics.life;
                 }
                 element.innerHTML = val;
             }
@@ -310,7 +310,7 @@ var game = function (forPlayer1, forPlayer2) {
                         }
                     }
                 );
-            }else{
+            } else {
                 console.log(timeOutCallbackFunction)
             }
         },
@@ -335,24 +335,34 @@ var game = function (forPlayer1, forPlayer2) {
                 });
 
                 function toRemove() {
-
                     if (this.getAttribute("name") == "unchecked") {
-                        if (location == null) {
-                            this.setAttribute("name", "checkedID1");
-                            this.style.backgroundColor = "red";
-                        } else {
-                            this.setAttribute("name", "checkedID2");
-                            this.style.backgroundColor = "powderblue";
-                        }
+                        this.setAttribute("name", "checkedID1");
+                        this.style.backgroundColor = "red";
                     } else {
                         this.setAttribute("name", "unchecked");
                         this.style.backgroundColor = "";
                     }
                 }
 
+                function toRemove2() {
+                    if (this.getAttribute("name") == "unchecked") {
+                        this.setAttribute("name", "checkedID2");
+                        this.style.backgroundColor = "powderblue";
+
+                    } else {
+                        this.setAttribute("name", "unchecked");
+                        this.style.backgroundColor = "";
+
+                    }
+                }
+
                 for (var i = 0; i < visualBattleField.rows.length; i++) {
                     for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
-                        visualBattleField.rows[i].cells[j].addEventListener("click", toRemove)
+                        if (virtualBattleField[i][j].owner == player.id) {
+                            visualBattleField.rows[i].cells[j].addEventListener("click", toRemove);
+                        } else if (virtualBattleField[i][j].owner == null) {
+                            visualBattleField.rows[i].cells[j].addEventListener("click", toRemove2);
+                        }
                     }
                 }
                 var getLocation = function (id) {
@@ -392,12 +402,13 @@ var game = function (forPlayer1, forPlayer2) {
                         }
                         wereSelectedInLocation = location;
                         wereSelectedInLocationToMove = locationToMove;
-                        if (accept == true && location.owner == player.id && locationToMove.owner == null && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
+                        if (accept == true && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
                             for (var i = 0; i < visualBattleField.rows.length; i++) {
                                 for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
                                     visualBattleField.rows[i].cells[j].setAttribute("name", "unchecked");
                                     visualBattleField.rows[i].cells[j].style.backgroundColor = "";
                                     visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove);
+                                    visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove2);
                                 }
                             }
                             clearInterval(interval);
@@ -413,11 +424,12 @@ var game = function (forPlayer1, forPlayer2) {
                                     visualBattleField.rows[i].cells[j].setAttribute("name", "unchecked");
                                     visualBattleField.rows[i].cells[j].style.backgroundColor = "";
                                     visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove);
+                                    visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove2);
                                 }
                             }
                             clearInterval(interval);
                             if (config.timeOut == true) {
-                                timeOutCallBackFunction();
+                                timeOutCallBackFunction("time out");
                             }
                         }
                     },
@@ -464,22 +476,15 @@ var game = function (forPlayer1, forPlayer2) {
         removeFromBattleField: function (battleField, toRemove) {
             if (Array.isArray(battleField) && typeof toRemove == "object") {
                 if (toRemove.type == "coordinates") {
-                    battleField[toRemove.coordinates[0]][toRemove.coordinates[1]].card = null;
-                    battleField[toRemove.coordinates[0]][toRemove.coordinates[1]].owner = null;
+                    battleField[toRemove.coordinates[1]][toRemove.coordinates[0]].card = null;
+                    battleField[toRemove.coordinates[1]][toRemove.coordinates[0]].owner = null;
                     return battleField;
+
                 } else if (toRemove.type == "byCard") {
 
                 }
 
 
-            } else {
-                return battleField;
-            }
-        },
-        addToBattleField: function (battleField, toAdd) {
-            if (Array.isArray(battleField) && typeof toAdd == "object") {
-                battleField[toAdd.coordinates[0]][toAdd.coordinates[1]].card = toAdd.card;
-                battleField[toAdd.coordinates[0]][toAdd.coordinates[1]].owner = toAdd.owner;
             } else {
                 return battleField;
             }
@@ -519,9 +524,9 @@ var game = function (forPlayer1, forPlayer2) {
         editVirtualBattleField: function (battleField, arrayOfChanges, player) {
             if (typeof battleField == "object" && Array.isArray(arrayOfChanges) == true && typeof player == "object") {
                 for (var i = 0; i < arrayOfChanges.length; i++) {
-                    console.log(arrayOfChanges[i].location.x);
-                    battleField[arrayOfChanges[i].location.x][arrayOfChanges[i].location.y].card = arrayOfChanges[i].card;
-                    battleField[arrayOfChanges[i].location.x][arrayOfChanges[i].location.y].owner = player.id;
+                    console.log(arrayOfChanges[i].location.y);
+                    battleField[arrayOfChanges[i].location.y][arrayOfChanges[i].location.x].card = arrayOfChanges[i].card;
+                    battleField[arrayOfChanges[i].location.y][arrayOfChanges[i].location.x].owner = player.id;
                 }
                 return battleField;
             } else {
@@ -667,6 +672,17 @@ var game = function (forPlayer1, forPlayer2) {
 
             });
             return cardPack;
+        },
+        virtualToVisual: function (virtualBattlefield, visualBattlefield) {
+            virtualBattlefield.forEach(function (element, index, array) {
+                element.forEach(function (subElement, subIndex, subArray) {
+                    if (subElement.card != null && subElement.owner != null) {
+                        visualBattlefield.rows[index].cells[subIndex].innerHTML = "owner: " + subElement.owner + " name: " + subElement.card.name + " class: " + subElement.card.statistics.class + " damage: " + subElement.card.statistics.attack + " health: " + subElement.card.statistics.life;
+                    } else {
+                        visualBattlefield.rows[index].cells[subIndex].innerHTML = "";
+                    }
+                });
+            });
         }
     }
 }
