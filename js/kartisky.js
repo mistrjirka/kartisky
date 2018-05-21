@@ -76,7 +76,6 @@ function async ( /**/ ) {
                 if (i != 0 && i != 1 && i != 2) {
                     if (typeof args[i] == "function") {
                         if (args[i](timeWatchdog) == true) {
-                            console.log("true")
                             clearInterval(interval);
                         }
                     }
@@ -104,7 +103,6 @@ var game = function (forPlayer1, forPlayer2) {
                     home: null,
                     id: id,
                     cards: cards,
-                    cardsOnField: 0,
                     cardPack: [],
                     hand: {
                         money: 0,
@@ -204,7 +202,7 @@ var game = function (forPlayer1, forPlayer2) {
                 j++;
             }, 33)
         },
-        playerCardPlacement: function (timeOut, mode, virtualBattleField, visualBattleField, acceptButton, cancelButton, succesCallBackFunction, timeOutCallbackFunction, cancelCallbackFunction, notTaboo = [null], timeCallBackFunction) {
+        playerCardPlacement: function (timeOut, mode, virtualBattleField, visualBattleField, acceptButton, succesCallBackFunction, timeOutCallbackFunction, notTaboo = [null], timeCallBackFunction) {
             if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallbackFunction == "function") {
                 var modes = [
                     {
@@ -261,7 +259,6 @@ var game = function (forPlayer1, forPlayer2) {
                 }
                 acceptButton.addEventListener("click", toRemove2)
                 var position = null;
-                var a = 0;
                 var positionHistory = null;
                 async (timeOut, 33, function () {
                         for (var i = 0; i < tmp1.position.cells.length; i++) {
@@ -287,12 +284,10 @@ var game = function (forPlayer1, forPlayer2) {
                     function (a) {
                         if (typeof timeCallBackFunction == "function") {
                             timeCallBackFunction(a);
-                            alert();
                         }
                     },
                     function () {
                         if (position.length == 1 && confirmed == true) {
-                            a += 1;
                             var row = 0;
                             for (var i = 0; modes.length > i; i++) {
                                 if (modes[i].type == mode) {
@@ -300,9 +295,7 @@ var game = function (forPlayer1, forPlayer2) {
                                 }
                             }
                             for (var i = 0; i < notTaboo.length; i++) {
-                                console.log(a+ " a")
                                 if (virtualBattleField[row][position[0]].card == notTaboo[i]) {
-                                    console.log(a+ " b")
                                     succesCallBackFunction(position[0], row);
                                     for (var j = 0; j < tmp1.position.cells.length; j++) {
                                         tmp1.position.cells[j].removeEventListener("click", toRemove);
@@ -313,7 +306,6 @@ var game = function (forPlayer1, forPlayer2) {
                                     }
                                     return true;
                                 }
-                                console.log(a+ " c")
                             }
                         }
                         confirmed = false;
@@ -364,6 +356,7 @@ var game = function (forPlayer1, forPlayer2) {
 
                     }
                 }
+
                 var cardPlaces = [];
                 for (var i = 0; i < visualBattleField.rows.length; i++) {
                     for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
@@ -400,9 +393,9 @@ var game = function (forPlayer1, forPlayer2) {
                         rd = [cardPlaces[i][0] + 1, cardPlaces[i][1] + 1];
                     }
                     tmp = [lu, mu, ru, r, l, ld, md, rd];
-                    tmp.forEach(function(element, index, array){
-                        if(element != null)
-                        visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
+                    tmp.forEach(function (element, index, array) {
+                        if (element != null)
+                            visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
                     });
                 }
                 var getLocation = function (id) {

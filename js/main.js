@@ -203,7 +203,6 @@ function round(player, place, confirmButton) {
                     x: null,
                     y: null
                 });
-                player.cardsOnField += 1;
                 getCardPlacement();
 
             }, movement);
@@ -213,8 +212,7 @@ function round(player, place, confirmButton) {
         console.log("getCardsPlacement" + cardsSelected.length);
 
         cardsSelected.forEach(function (element, index, arr) {
-            console.log(index + " index")
-            console.log(newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"), document.getElementById("cancel"),
+            newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"),
                 function (a, b) {
                     element.x = a;
                     element.y = b;
@@ -226,51 +224,32 @@ function round(player, place, confirmButton) {
                         }
                     }], player);
                     newGame.do.virtualToVisual(battleField, document.getElementById("is"));
-                    if (index + 1 >= arr.length) {
-                        console.log("wtf Error")
-                        movement();
-                    }
-
-                },
-                function () {
-                    if (index + 1 >= arr.length) {
-                        console.log("wtf Error2")
-                        movement();
-                    }
-                },
-                function () {
-                    if (index + 1 >= arr.length) {
-                        console.log("wtf Error3")
-                        movement();
-                    }
-                }))
+                    console.log(battleField);
+                    movement();
+                }, alert);
         });
-
 
     }
 
     function movement() {
         console.log("movement");
-        alert( player.cardsOnField)
-        for (var i = 0; í < player.cardsOnField; i++) {
-            alert()
-            newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, document.getElementById("butt"), 500, function (a, b) {
-                var card = battleField[a[0]][a[1]].card;
-                battleField = newGame.do.removeFromBattleField(battleField, {
-                    type: "coordinates",
-                    coordinates: [a[1], a[0]]
-                });
-                newGame.do.editVirtualBattleField(battleField, [{
-                    card: card,
-                    location: {
-                        x: b[1],
-                        y: b[0]
-                    }
+        newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, document.getElementById("butt"), 500, function (a, b) {
+            var card = battleField[a[0]][a[1]].card;
+            battleField = newGame.do.removeFromBattleField(battleField, {
+                type: "coordinates",
+                coordinates: [a[1], a[0]]
+            });
+            console.log(battleField)
+            newGame.do.editVirtualBattleField(battleField, [{
+                card: card,
+                location: {
+                    x: b[1],
+                    y: b[0]
+                }
         }], player);
-                newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+            newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 
-            }, alert);
-        }
+        }, alert);
     }
 
     function attack() {
