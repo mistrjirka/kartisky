@@ -210,25 +210,49 @@ function round(player, place, confirmButton) {
 
     function getCardPlacement() {
         console.log("getCardsPlacement" + cardsSelected.length);
-
-        cardsSelected.forEach(function (element, index, arr) {
-            newGame.get.playerCardPlacement(500, player.home, battleField, document.getElementById("is"), document.getElementById("butt"),
-                function (a, b) {
-                    element.x = a;
-                    element.y = b;
-                    battleField = newGame.do.editVirtualBattleField(battleField, [{
-                        card: element.card,
-                        location: {
-                            x: element.x,
-                            y: element.y
+        var done = {
+            bool: true,
+            completleDone: false,
+            count: 0
+        };
+        async (33, 1000, function () {
+                alert("async timeout");
+                movement();
+            }, function () {
+                if (cardsSelected.length > done.count && done.bool == true) {
+                    newGame.get.playerCardPlacement(1000, player.home, battleField, document.getElementById("is"), document.getElementById("butt"),
+                        function (a, b) {
+                            console.log("jo")
+                            cardsSelected[done.count].x = a;
+                            cardsSelected[done.count].y = b;
+                            battleField = newGame.do.editVirtualBattleField(battleField, [{
+                                card: cardsSelected[done.count].card,
+                                location: {
+                                    x: cardsSelected[done.count].x,
+                                    y: cardsSelected[done.count].y
+                                }
+                                }], player);
+                            newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                            done.bool = true;
+                            done.count += 1;
                         }
-                    }], player);
-                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
-                    console.log(battleField);
-                    movement();
-                }, alert);
-        });
 
+                        ,
+                        function (a) {
+
+                            alert(a + " ne");
+                        });
+                }
+            },
+            function () {
+                if (cardsSelected.length <= done.count && done.bool == true) {
+                    console.log("konec");
+                    movement();
+                    return true;
+                }
+                done.bool = false;
+            }
+        );
     }
 
     function movement() {
@@ -249,7 +273,9 @@ function round(player, place, confirmButton) {
         }], player);
             newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 
-        }, alert);
+        }, function (a) {
+            alert(a + " movement")
+        });
     }
 
     function attack() {

@@ -60,7 +60,6 @@ function makeid() {
     return text;
 }
 
-
 function async ( /**/ ) {
     var interval;
     var time;
@@ -71,7 +70,7 @@ function async ( /**/ ) {
         interval = args[1]
         timeOutCallBack = args[2]
         var timeWatchdog = 0;
-        var interval = setInterval(function () {
+        interval = setInterval(function () {
             for (var i = 0; i < args.length; i++) {
                 if (i != 0 && i != 1 && i != 2) {
                     if (typeof args[i] == "function") {
