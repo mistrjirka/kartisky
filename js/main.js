@@ -1,93 +1,93 @@
 var nations = [{
-    nation: "people",
-    abilities: {
+	nation: "people",
+	abilities: {
 
-    },
-    cards: [{
-        name: "warior 1",
-        price: 75,
-        amount: 10,
-        statistics: {
-            class: "warior",
-            attack: 100,
-            life: 150,
-            weakpoints: {
-                archer: 10,
-                warior: 0,
-                balista: -5,
-                lancer: 0,
-                cavalry: -10
-            }
-        },
-        upgrade: null
+	},
+	cards: [{
+		name: "warior 1",
+		price: 75,
+		amount: 10,
+		statistics: {
+			class: "warior",
+			attack: 100,
+			life: 150,
+			weakpoints: {
+				archer: 10,
+				warior: 0,
+				balista: -5,
+				lancer: 0,
+				cavalry: -10
+			}
+		},
+		upgrade: null
     }, {
-        name: "archer 1",
-        price: 55,
-        amount: 15,
-        statistics: {
-            class: "archer",
-            attack: 70,
-            life: 50,
-            weakpoints: {
-                archer: 0,
-                warior: -10,
-                balista: -20,
-                lancer: -10,
-                cavalry: -20
-            }
+		name: "archer 1",
+		price: 55,
+		amount: 15,
+		statistics: {
+			class: "archer",
+			attack: 70,
+			life: 50,
+			weakpoints: {
+				archer: 0,
+				warior: -10,
+				balista: -20,
+				lancer: -10,
+				cavalry: -20
+			}
 
-        }
+		}
     }, {
-        name: "balista 1",
-        price: 150,
-        amount: 3,
-        statistics: {
-            class: "balista",
-            attack: 200,
-            life: 75,
-            weakpoints: {
-                archer: 100,
-                warior: 100,
-                balista: -100,
-                lancer: 100,
-                cavalry: 100
-            }
-        },
-        upgrade: null
+		name: "balista 1",
+		price: 150,
+		amount: 3,
+		statistics: {
+			class: "balista",
+			attack: 200,
+			life: 75,
+			weakpoints: {
+				archer: 100,
+				warior: 100,
+				balista: -100,
+				lancer: 100,
+				cavalry: 100
+			}
+		},
+		upgrade: null
     }, {
-        name: "lancer 1",
-        price: 75,
-        amount: 10,
-        statistics: {
-            class: "lancer",
-            attack: 70,
-            life: 200,
-            weakpoints: {
-                archer: 10,
-                warior: 0,
-                balista: -10,
-                lancer: 0,
-                cavalry: 50
-            }
-        },
-        upgrade: null
+		name: "lancer 1",
+		price: 75,
+		amount: 10,
+		statistics: {
+			class: "lancer",
+			attack: 70,
+			life: 200,
+			weakpoints: {
+				archer: 10,
+				warior: 0,
+				balista: -10,
+				lancer: 0,
+				cavalry: 50
+			}
+		},
+		upgrade: null
     }, {
-        name: "cavalry 1",
-        price: 90,
-        amount: 10,
-        statistics: {
-            class: "cavalry",
-            attack: 100,
-            life: 200,
-            weakpoints: {
-                archer: 20,
-                warior: 20,
-                balista: -10,
-                lancer: -10,
-                cavalry: 0
-            }
-        },
-        upgrade: null
+		name: "cavalry 1",
+		price: 90,
+		amount: 10,
+		statistics: {
+			class: "cavalry",
+			attack: 100,
+			life: 200,
+			weakpoints: {
+				archer: 20,
+				warior: 20,
+				balista: -10,
+				lancer: -10,
+				cavalry: 0
+			}
+		},
+		upgrade: null
     }]
 }]
 var battleField = [
@@ -161,14 +161,14 @@ var battleField = [
 ];
 
 var config = {
-    round: {
-        amountOfCards: 1,
-        money: 100,
-        timeOutForAction: 500
-    }
+	round: {
+		amountOfCards: 1,
+		money: 100,
+		timeOutForAction: 500
+	}
 }
 
-var newGame = new game();
+var newGame = new Kartisky();
 
 var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations), "hrac1");
 var player2 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations), "hrac2");
@@ -180,113 +180,119 @@ newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "
 player1.cardPack = newGame.do.makeCardPack(player1.cards);
 player2.cardPack = newGame.do.makeCardPack(player2.cards);
 
-function round(player, place, confirmButton) {
-    var cardsSelected = [];
-    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+function round(player, place, visualBattleField, confirmButton, cancelButton) {
+	var cardPlace = document.getElementById(place);
+	var acceptButton = document.getElementById(confirmButton);
+	var cancelButton = document.getElementById(cancelButton);
+	var visualBattleField = document.getElementById(visualBattleField)
+	var cardsSelected = [];
+	newGame.do.virtualToVisual(battleField, visualBattleField);
 
-    function roundItems() {
-        player.hand.money += config.round.money;
-        player.hand.cards.push(player.cardPack[0]);
-        player.cardPack.shift();
-        getCards();
-    };
+	function roundItems() {
+		player.hand.money += config.round.money;
+		player.hand.cards.push(player.cardPack[0]);
+		player.cardPack.shift();
+		getCards();
+	};
 
-    function getCards() {
-        console.log("getCards");
-        newGame.get.playerCardMove(500, {
-                id: place,
-                button: confirmButton
-            }, player,
-            function (a) {
-                cardsSelected.push({
-                    card: player.hand.cards[a],
-                    x: null,
-                    y: null
-                });
-                getCardPlacement();
+	function getCards() {
+		console.log("getCards");
+		newGame.get.playerCardMove(500, 5, cardPlace, acceptButton, cancelButton, player,
+			function (a) {
+				alert();
+				a.forEach(function (el) {
 
-            }, movement);
-    };
+					cardsSelected.push({
+						card: player.hand.cards[el],
+						x: null,
+						y: null
+					});
+				});
+				console.log(cardsSelected)
+				console.log("getcards")
+				getCardPlacement();
 
-    function getCardPlacement() {
-        console.log("getCardsPlacement" + cardsSelected.length);
-        var done = {
-            bool: true,
-            completleDone: false,
-            count: 0
-        };
-        async (33, 1000, function () {
-                alert("async timeout");
-                movement();
-            }, function () {
-                if (cardsSelected.length > done.count && done.bool == true) {
-                    newGame.get.playerCardPlacement(1000, player.home, battleField, document.getElementById("is"), document.getElementById("butt"),
-                        function (a, b) {
-                            console.log("jo")
-                            cardsSelected[done.count].x = a;
-                            cardsSelected[done.count].y = b;
-                            battleField = newGame.do.editVirtualBattleField(battleField, [{
-                                card: cardsSelected[done.count].card,
-                                location: {
-                                    x: cardsSelected[done.count].x,
-                                    y: cardsSelected[done.count].y
-                                }
+			}, movement, movement);
+	};
+
+	function getCardPlacement() {
+		console.log("getCardsPlacement" + cardsSelected.length);
+		var done = {
+			bool: true,
+			completleDone: false,
+			count: 0
+		};
+		async (33, 1000, function () {
+				alert("async timeout");
+				movement();
+			}, function () {
+				if (cardsSelected.length > done.count && done.bool == true) {
+					newGame.get.playerCardPlacement(1000, player.home, battleField, visualBattleField, acceptButton,
+						function (a, b) {
+							console.log("jo")
+							cardsSelected[done.count].x = a;
+							cardsSelected[done.count].y = b;
+							battleField = newGame.do.editVirtualBattleField(battleField, [{
+								card: cardsSelected[done.count].card,
+								location: {
+									x: cardsSelected[done.count].x,
+									y: cardsSelected[done.count].y
+								}
                                 }], player);
-                            newGame.do.virtualToVisual(battleField, document.getElementById("is"));
-                            done.bool = true;
-                            done.count += 1;
-                        }
+							newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+							done.bool = true;
+							done.count += 1;
+						}
 
-                        ,
-                        function (a) {
+						,
+						function (a) {
+							alert(a + " ne");
+						});
+				}
+			},
+			function () {
+				if (cardsSelected.length <= done.count && done.bool == true) {
+					console.log("konec");
+					movement();
+					return true;
+				}
+				done.bool = false;
+			}
+		);
+	}
 
-                            alert(a + " ne");
-                        });
-                }
-            },
-            function () {
-                if (cardsSelected.length <= done.count && done.bool == true) {
-                    console.log("konec");
-                    movement();
-                    return true;
-                }
-                done.bool = false;
-            }
-        );
-    }
-
-    function movement() {
-        console.log("movement");
-        newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, document.getElementById("butt"), 500, function (a, b) {
-            var card = battleField[a[0]][a[1]].card;
-            battleField = newGame.do.removeFromBattleField(battleField, {
-                type: "coordinates",
-                coordinates: [a[1], a[0]]
-            });
-            console.log(battleField)
-            newGame.do.editVirtualBattleField(battleField, [{
-                card: card,
-                location: {
-                    x: b[1],
-                    y: b[0]
-                }
+	function movement() {
+		console.log("movement");
+		newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, acceptButton, 500, function (a, b) {
+			var card = battleField[a[0]][a[1]].card;
+			battleField = newGame.do.removeFromBattleField(battleField, {
+				type: "coordinates",
+				coordinates: [a[1], a[0]]
+			});
+			console.log(battleField)
+			newGame.do.editVirtualBattleField(battleField, [{
+				card: card,
+				location: {
+					x: b[1],
+					y: b[0]
+				}
         }], player);
-            newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+			newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 
-        }, function (a) {
-            alert(a + " movement")
-        });
-    }
+		}, function (a) {
+			alert(a + " movement")
+		});
+	}
 
-    function attack() {
+	function attack() {
 
-    }
-    roundItems();
+	}
+	roundItems();
 
 };
 
 
-round(player1, "player1", "butt");
+round(player1, "player1", "is", "accept", "cancel");
 /*
 var player1;
 player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));
