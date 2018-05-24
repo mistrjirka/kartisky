@@ -168,7 +168,6 @@ var Kartisky = function () {
 			//initialization
 			var wereActive = [];
 			var list = document.getElementsByClassName(classOfCheckbox); //todo
-			alert(list)
 			var active = [];
 
 			function removeElement() {
@@ -187,7 +186,6 @@ var Kartisky = function () {
 					}
 				}
 
-
 				function checkActive(ac) {
 					ac.forEach(function (el) {
 						if (el == null) {
@@ -199,7 +197,6 @@ var Kartisky = function () {
 				}
 
 				if (accept == true && active.length <= numberOfCards && active.length != 0 && checkActive(active) == true) {
-					alert(active[0])
 					var toReturn = [];
 					active.forEach(function (el) {
 						toReturn.push(findIndex(list, el));
@@ -229,7 +226,7 @@ var Kartisky = function () {
 				accept = false;
 			});
 		},
-		playerCardPlacement: function (timeOut, mode, virtualBattleField, visualBattleField, acceptButton, succesCallBackFunction, timeOutCallbackFunction, notTaboo = [null], timeCallBackFunction) {
+		playerCardPlacement: function (timeOut, mode, player, virtualBattleField, visualBattleField, acceptButton, succesCallBackFunction, timeOutCallbackFunction, notTaboo = [null], timeCallBackFunction) {
 			if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallbackFunction == "function") {
 				var modes = [
 					{
@@ -288,6 +285,7 @@ var Kartisky = function () {
 				acceptButton.addEventListener("click", toRemove2)
 				var position = null;
 				var positionHistory = null;
+
 				async (timeOut, 33, function () {
 						for (var i = 0; i < tmp1.position.cells.length; i++) {
 							tmp1.position.cells[i].removeEventListener("click", toRemove);
@@ -322,17 +320,19 @@ var Kartisky = function () {
 									row = modes[i].row;
 								}
 							}
-							for (var i = 0; i < notTaboo.length; i++) {
-								if (virtualBattleField[row][position[0]].card == notTaboo[i]) {
-									succesCallBackFunction(position[0], row);
-									for (var j = 0; j < tmp1.position.cells.length; j++) {
-										tmp1.position.cells[j].removeEventListener("click", toRemove);
-										acceptButton.removeEventListener("click", toRemove2);
-										tmp1.position.cells[j].style.backgroundColor = "";
-										tmp1.position.cells[j].setAttribute("name", "unchecked");
+							if (virtualBattleField[row][position[0]].owner != player.id) {
+								for (var i = 0; i < notTaboo.length; i++) {
+									if (virtualBattleField[row][position[0]].card == notTaboo[i]) {
+										succesCallBackFunction(position[0], row);
+										for (var j = 0; j < tmp1.position.cells.length; j++) {
+											tmp1.position.cells[j].removeEventListener("click", toRemove);
+											acceptButton.removeEventListener("click", toRemove2);
+											tmp1.position.cells[j].style.backgroundColor = "";
+											tmp1.position.cells[j].setAttribute("name", "unchecked");
 
+										}
+										return true;
 									}
-									return true;
 								}
 							}
 						}

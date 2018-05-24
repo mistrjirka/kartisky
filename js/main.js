@@ -162,7 +162,7 @@ var battleField = [
 
 var config = {
 	round: {
-		amountOfCards: 1,
+		amountOfCards: 4,
 		money: 100,
 		timeOutForAction: 500
 	}
@@ -190,8 +190,10 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 
 	function roundItems() {
 		player.hand.money += config.round.money;
-		player.hand.cards.push(player.cardPack[0]);
-		player.cardPack.shift();
+		for (var i = 1; config.round.amountOfCards >= i; i++) {
+			player.hand.cards.push(player.cardPack[0]);
+			player.cardPack.shift();
+		}
 		getCards();
 	};
 
@@ -199,7 +201,6 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 		console.log("getCards");
 		newGame.get.playerCardMove(500, 5, cardPlace, acceptButton, cancelButton, player,
 			function (a) {
-				alert();
 				a.forEach(function (el) {
 
 					cardsSelected.push({
@@ -227,7 +228,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 				movement();
 			}, function () {
 				if (cardsSelected.length > done.count && done.bool == true) {
-					newGame.get.playerCardPlacement(1000, player.home, battleField, visualBattleField, acceptButton,
+					newGame.get.playerCardPlacement(1000, player.home, player, battleField, visualBattleField, acceptButton,
 						function (a, b) {
 							console.log("jo")
 							cardsSelected[done.count].x = a;
