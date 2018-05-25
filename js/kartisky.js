@@ -315,7 +315,6 @@ var Kartisky = function () {
 						position = getPosition();
 						if (position != null && positionHistory != null) {
 							if (position.length > 1) {
-								console.log(positionHistory[0])
 								tmp1.position.cells[positionHistory[0]].setAttribute("name", "unchecked");
 								tmp1.position.cells[positionHistory[0]].style.backgroundColor = "";
 							}
@@ -515,8 +514,6 @@ var Kartisky = function () {
 							if (accept == true && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
 								remove();
 								succesCallBackFunction(location[0], locationToMove[0]);
-							} else if (locationToMove != null && location != null) {
-								console.log(virtualBattleField[location[0][0]][location[0][1]].card)
 							}
 						}
 
@@ -624,7 +621,6 @@ var Kartisky = function () {
 		editVirtualBattleField: function (battleField, arrayOfChanges, player) {
 			if (typeof battleField == "object" && Array.isArray(arrayOfChanges) == true && typeof player == "object") {
 				for (var i = 0; i < arrayOfChanges.length; i++) {
-					console.log(arrayOfChanges[i].location.y);
 					battleField[arrayOfChanges[i].location.y][arrayOfChanges[i].location.x].card = arrayOfChanges[i].card;
 					battleField[arrayOfChanges[i].location.y][arrayOfChanges[i].location.x].owner = player.id;
 				}
@@ -768,8 +764,6 @@ var Kartisky = function () {
 					}
 				}
 				cardPack.push(arry[tmp]);
-				console.log(cardPack);
-
 			});
 			return cardPack;
 		},

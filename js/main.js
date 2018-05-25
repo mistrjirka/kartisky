@@ -209,15 +209,12 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 						y: null
 					});
 				});
-				console.log(cardsSelected)
-				console.log("getcards")
 				getCardPlacement();
 
 			}, movement, movement);
 	};
 
 	function getCardPlacement() {
-		console.log("getCardsPlacement" + cardsSelected.length);
 		var done = {
 			bool: true,
 			completleDone: false,
@@ -231,7 +228,6 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 					if (cardsSelected.length > done.count && done.bool == true) {
 						newGame.get.playerCardPlacement(1000, player.home, player, battleField, visualBattleField, acceptButton, cancelButton,
 							function (a, b) {
-								console.log("jo")
 								cardsSelected[done.count].x = a;
 								cardsSelected[done.count].y = b;
 								battleField = newGame.do.editVirtualBattleField(battleField, [{
@@ -256,7 +252,6 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 				},
 				function () {
 					if (cardsSelected.length <= done.count && done.bool == true) {
-						console.log("konec");
 						movement();
 						return true;
 					}
@@ -274,7 +269,6 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 				type: "coordinates",
 				coordinates: [a[1], a[0]]
 			});
-			console.log(battleField)
 			newGame.do.editVirtualBattleField(battleField, [{
 				card: card,
 				location: {
