@@ -357,7 +357,7 @@ var Kartisky = function () {
 				console.log(timeOutCallbackFunction)
 			}
 		},
-		playersMinionMovement: function (virtualBattleField, visualBattleField, player, acceptButton, cancelButton, timeOut, succesCallBackFunction, cancelCallBack, timeOutCallBackFunction) {
+		playersMinionMovement: function (virtualBattleField, visualBattleField, player, acceptButton, cancelButton, timeOut, succesCallBackFunction, cancelCallBack, actualCard, timeOutCallBackFunction) {
 			if (Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof player == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
 				var location = null;
 				var wereSelectedInLocation = null;
@@ -408,56 +408,6 @@ var Kartisky = function () {
 					}
 				}
 
-				var cardPlaces = [];
-				for (var i = 0; i < visualBattleField.rows.length; i++) {
-					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
-						if (virtualBattleField[i][j].owner == player.id) {
-							cardPlaces.push([i, j]);
-							visualBattleField.rows[i].cells[j].addEventListener("click", toRemove);
-						}
-					}
-				}
-				for (var i = 0; i < cardPlaces.length; i++) {
-					var lu, mu, ru, l, r, ld, md, rd, tmp;
-					if (cardPlaces[i][0] != 0 && cardPlaces[i][1] != 0) {
-						if (virtualBattleField[cardPlaces[i][0] - 1, cardPlaces[i][1] - 1].owner == null)
-							lu = [cardPlaces[i][0] - 1, cardPlaces[i][1] - 1];
-					}
-					if (cardPlaces[i][0] != 0) {
-						if (virtualBattleField[cardPlaces[i][0] - 1, cardPlaces[i][1]].owner == null)
-							mu = [cardPlaces[i][0] - 1, cardPlaces[i][1]];
-					}
-					if (cardPlaces[i][0] != 0 && cardPlaces[i][1] != virtualBattleField[0].length - 1) {
-						if (virtualBattleField[cardPlaces[i][0] - 1, cardPlaces[i][1] + 1])
-							ru = [cardPlaces[i][0] - 1, cardPlaces[i][1] + 1];
-					}
-					if (cardPlaces[i][1] != 0) {
-						if(virtualBattleField[cardPlaces[i][0], cardPlaces[i][1] - 1].owner == null)
-						l = [cardPlaces[i][0], cardPlaces[i][1] - 1];
-					}
-					if (cardPlaces[i][1] != virtualBattleField[0].length - 1) {
-						if(virtualBattleField[cardPlaces[i][0], cardPlaces[i][1] + 1].owner == null)
-						r = [cardPlaces[i][0], cardPlaces[i][1] + 1];
-					}
-					if (cardPlaces[i][0] != virtualBattleField.length - 1 && cardPlaces[i][1] != 0) {
-						if(virtualBattleField[cardPlaces[i][0] + 1, cardPlaces[i][1] - 1].owner == null)
-						ld = [cardPlaces[i][0] + 1, cardPlaces[i][1] - 1];
-					}
-					if (cardPlaces[i][0] != virtualBattleField.length - 1) {
-						if(virtualBattleField[cardPlaces[i][0] + 1, cardPlaces[i][1]].owner == null)
-						md = [cardPlaces[i][0] + 1, cardPlaces[i][1]];
-					}
-					if (cardPlaces[i][0] != virtualBattleField.length - 1 && cardPlaces[i][1] != virtualBattleField[0].length - 1) {
-						if(virtualBattleField[cardPlaces[i][0] + 1, cardPlaces[i][1] + 1].owner == null)
-						rd = [cardPlaces[i][0] + 1, cardPlaces[i][1] + 1];
-					}
-					tmp = [lu, mu, ru, r, l, ld, md, rd];
-					tmp.forEach(function (element, index, array) {
-						if (element != null)
-							visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
-					});
-				}
-
 				function remove() {
 					for (var i = 0; i < visualBattleField.rows.length; i++) {
 						for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
@@ -472,65 +422,158 @@ var Kartisky = function () {
 					clearInterval(interval);
 				}
 
-				function getLocation(id) {
-					var cache = [];
-					for (var i = 0; i < visualBattleField.rows.length; i++) {
-						for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
-							if (visualBattleField.rows[i].cells[j].getAttribute("name") == id) {
-								cache.push([i, j]);
-							} else {}
-						}
+				function getUserInput(place) {
+					visualBattleField.rows[place[0]].cells[place[1]].addEventListener("click", toRemove);
+					var lu, mu, ru, l, r, ld, md, rd, tmp;
+					if (place[0] != 0 && place[1] != 0) {
+						if (virtualBattleField[place[0] - 1][place[1] - 1].owner == null)
+							lu = [place[0] - 1, place[1] - 1];
 					}
-					if (typeof cache[0] == "undefined") {
-						return null;
+					if (place[0] != 0) {
+						if (virtualBattleField[place[0] - 1][place[1]].owner == null)
+							mu = [place[0] - 1, place[1]];
+					}
+					if (place[0] != 0 && place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0] - 1, place[1] + 1])
+							ru = [place[0] - 1, place[1] + 1];
+					}
+					if (place[1] != 0) {
+						if (virtualBattleField[place[0]][place[1] - 1].owner == null)
+							l = [place[0], place[1] - 1];
+					}
+					if (place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0]][place[1] + 1].owner == null)
+							r = [place[0], place[1] + 1];
+					}
+					if (place[0] != virtualBattleField.length - 1 && place[1] != 0) {
+						if (virtualBattleField[place[0] + 1][place[1] - 1].owner == null)
+							ld = [place[0] + 1, place[1] - 1];
+					}
+					if (place[0] != virtualBattleField.length - 1) {
+						if (virtualBattleField[place[0] + 1][place[1]].owner == null)
+							md = [place[0] + 1, place[1]];
+					}
+					if (place[0] != virtualBattleField.length - 1 && place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0] + 1][place[1] + 1].owner == null)
+							rd = [place[0] + 1, place[1] + 1];
+					}
+					tmp = [lu, mu, ru, r, l, ld, md, rd];
+					tmp.forEach(function (element, index, array) {
+						if (element != null)
+							visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
+					});
 
-					} else {
-						return cache;
-					}
-				}
-
-				function controlWatchdog(location, locationBefore) {
-					for (var i = 0; i < locationBefore.length; i++) {
-						visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
-						visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
-					}
-				}
-				var interval = setInterval(function () {
-						location = getLocation("checkedID1");
-						locationToMove = getLocation("checkedID2");
-						if (location != null) {
-							if (location.length > 1) {
-								controlWatchdog(location, wereSelectedInLocation);
+					function getLocation(id) {
+						var cache = [];
+						for (var i = 0; i < visualBattleField.rows.length; i++) {
+							for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
+								if (visualBattleField.rows[i].cells[j].getAttribute("name") == id) {
+									cache.push([i, j]);
+								} else {}
 							}
 						}
-						if (locationToMove != null) {
-							if (locationToMove.length > 1) {
-								controlWatchdog(locationToMove, wereSelectedInLocationToMove);
-							}
+						if (typeof cache[0] == "undefined") {
+							return null;
+
+						} else {
+							return cache;
 						}
-						wereSelectedInLocation = location;
-						wereSelectedInLocationToMove = locationToMove;
-						if (location != null && locationToMove != null) {
-							if (accept == true && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
+					}
+
+					function controlWatchdog(location, locationBefore) {
+						for (var i = 0; i < locationBefore.length; i++) {
+							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
+							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+						}
+					}
+					interval = setInterval(function () {
+							location = getLocation("checkedID1");
+							locationToMove = getLocation("checkedID2");
+							if (location != null) {
+								if (location.length > 1) {
+									controlWatchdog(location, wereSelectedInLocation);
+								}
+							}
+							if (locationToMove != null) {
+								if (locationToMove.length > 1) {
+									controlWatchdog(locationToMove, wereSelectedInLocationToMove);
+								}
+							}
+							wereSelectedInLocation = location;
+							wereSelectedInLocationToMove = locationToMove;
+							if (location != null && locationToMove != null) {
+								if (accept == true && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
+									remove();
+									done.doneTask = true;
+									done.count += 1;
+									result.push({
+										from: place,
+										to: locationToMove[0]
+									});
+								}
+							}
+
+							if (cancled == true) {
 								remove();
-								succesCallBackFunction(location[0], locationToMove[0]);
+								done.doneTask = true;
+								done.count += 1;
+								result.push({
+									from: place,
+									to: null
+								});
 							}
-						}
-
-						if (cancled == true) {
-							remove();
-							cancelCallBack();
-						}
-						accept = false;
-						timeOutTime += 1;
-						if (timeOutTime > timeOut) {
-							remove();
-							if (config.timeOut == true) {
-								timeOutCallBackFunction("time out");
+							accept = false;
+							timeOutTime += 1;
+							if (timeOutTime > timeOut) {
+								remove();
+								if (config.timeOut == true) {
+									done.doneTask = true;
+									done.count += 1;
+									result.push({
+										from: place,
+										to: null
+									});
+									remove();
+								}
 							}
+						},
+						33);
+				}
+				var interval;
+				var cardPlaces = [];
+				var result = [];
+				var done = {
+					count: 0,
+					doneTask: true
+				};
+				for (var i = 0; i < visualBattleField.rows.length; i++) {
+					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
+						if (virtualBattleField[i][j].owner == player.id) {
+							cardPlaces.push([i, j]);
+							//							visualBattleField.rows[i].cells[j].addEventListener("click", toRemove);
 						}
-					},
-					33)
+					}
+				}
+				if (cardPlaces.length != 0) {
+					async (33, timeOut, function () {
+							remove();
+							timeOutCallBackFunction();
+						}, function () {
+							if (done.doneTask == true) {
+								actualCard(cardPlaces[done.count]);
+								getUserInput(cardPlaces[done.count]);
+								done.doneTask = false;
+							}
+						},
+						function () {
+							if(done.count + 1 == cardPlaces.length){
+								succesCallBackFunction(result);
+								return true;
+							}
+						});
+				} else {
+					cancelCallBack("No units to move");
+				}
 			} else {
 				console.log(
 					"Wrong value type"
@@ -565,9 +608,6 @@ var Kartisky = function () {
 				return "Wrong value type!!! nations" + typeof nations;
 			}
 		},
-		roundItems: function (player) {
-
-		}
 	}
 	this.do = {
 		removeFromBattleField: function (battleField, toRemove) {
