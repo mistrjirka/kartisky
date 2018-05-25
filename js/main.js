@@ -223,48 +223,52 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 			completleDone: false,
 			count: 0
 		};
-		async (33, 1000, function () {
-				alert("async timeout");
-				movement();
-			}, function () {
-				if (cardsSelected.length > done.count && done.bool == true) {
-					newGame.get.playerCardPlacement(1000, player.home, player, battleField, visualBattleField, acceptButton,
-						function (a, b) {
-							console.log("jo")
-							cardsSelected[done.count].x = a;
-							cardsSelected[done.count].y = b;
-							battleField = newGame.do.editVirtualBattleField(battleField, [{
-								card: cardsSelected[done.count].card,
-								location: {
-									x: cardsSelected[done.count].x,
-									y: cardsSelected[done.count].y
-								}
-                                }], player);
-							newGame.do.virtualToVisual(battleField, document.getElementById("is"));
-							done.bool = true;
-							done.count += 1;
-						}
-
-						,
-						function (a) {
-							alert(a + " ne");
-						});
-				}
-			},
-			function () {
-				if (cardsSelected.length <= done.count && done.bool == true) {
-					console.log("konec");
+		if (cardsSelected.length != 0) {
+			async (33, 1000, function () {
+					alert("async timeout");
 					movement();
-					return true;
+				}, function () {
+					if (cardsSelected.length > done.count && done.bool == true) {
+						newGame.get.playerCardPlacement(1000, player.home, player, battleField, visualBattleField, acceptButton, cancelButton,
+							function (a, b) {
+								console.log("jo")
+								cardsSelected[done.count].x = a;
+								cardsSelected[done.count].y = b;
+								battleField = newGame.do.editVirtualBattleField(battleField, [{
+									card: cardsSelected[done.count].card,
+									location: {
+										x: cardsSelected[done.count].x,
+										y: cardsSelected[done.count].y
+									}
+                                }], player);
+								newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+								done.bool = true;
+								done.count += 1;
+							},
+							function () {
+								done.bool = true;
+								done.count += 1;
+							},
+							function (a) {
+								alert(a + " ne");
+							});
+					}
+				},
+				function () {
+					if (cardsSelected.length <= done.count && done.bool == true) {
+						console.log("konec");
+						movement();
+						return true;
+					}
+					done.bool = false;
 				}
-				done.bool = false;
-			}
-		);
+			);
+		}
 	}
 
 	function movement() {
 		console.log("movement");
-		newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, acceptButton, 500, function (a, b) {
+		newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, acceptButton, cancelButton, 500, function (a, b) {
 			var card = battleField[a[0]][a[1]].card;
 			battleField = newGame.do.removeFromBattleField(battleField, {
 				type: "coordinates",
@@ -280,13 +284,13 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
         }], player);
 			newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 
-		}, function (a) {
-			alert(a + " movement")
+		}, attack, function (a) {
+			attack();
 		});
 	}
 
 	function attack() {
-
+		console.log("attack");
 	}
 	roundItems();
 
