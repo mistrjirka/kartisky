@@ -180,7 +180,8 @@ newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "
 player1.cardPack = newGame.do.makeCardPack(player1.cards);
 player2.cardPack = newGame.do.makeCardPack(player2.cards);
 
-function round(player, place, visualBattleField, confirmButton, cancelButton) {
+function round(player, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton) {
+	var cancelEverythingButton = document.getElementById(cancelEverythingButton);
 	var cardPlace = document.getElementById(place);
 	var acceptButton = document.getElementById(confirmButton);
 	var cancelButton = document.getElementById(cancelButton);
@@ -263,7 +264,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 
 	function movement() {
 		console.log("movement");
-		newGame.get.playersMinionMovement(battleField, document.getElementById("is"), player, acceptButton, cancelButton, 500, function (a) {
+		newGame.get.playersMinionMovement(500, battleField, document.getElementById("is"), player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
 			var card = battleField[a.from[0]][a.from[1]].card;
 			battleField = newGame.do.removeFromBattleField(battleField, {
 				type: "coordinates",
@@ -277,10 +278,10 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 				}
         }], player);
 			newGame.do.virtualToVisual(battleField, document.getElementById("is"));
-
-		}, attack, function(actual){
+		}, attack, attack, function (actual) {
 			console.log(actual);
 		}, function (a) {
+			alert("timeout movement")
 			attack();
 		});
 	}
@@ -293,7 +294,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton) {
 };
 
 
-round(player1, "player1", "is", "accept", "cancel");
+round(player1, "player1", "is", "accept", "cancel", "cancelaction");
 /*
 var player1;
 player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));

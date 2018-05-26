@@ -357,15 +357,14 @@ var Kartisky = function () {
 				console.log(timeOutCallbackFunction)
 			}
 		},
-		playersMinionMovement: function (virtualBattleField, visualBattleField, player, acceptButton, cancelButton, timeOut, succesCallBackFunction, cancelCallBack, actualCard, timeOutCallBackFunction) {
+		playersMinionMovement: function (timeOut, virtualBattleField, visualBattleField, player, acceptButton, cancelButton, everythingCancelButton, succesCallBackFunction, taskDoneCallBackFunction, cancelCallBack, actualCard, timeOutCallBackFunction) {
 			if (Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof player == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
-				var location = null;
-				var wereSelectedInLocation = null;
-				var locationToMove = null;
-				var wereSelectedInLocationToMove = null;
 				var config = {
 					timeOut: false
 				}
+				var wereSelectedInLocation = null;
+				var locationToMove = null;
+				var wereSelectedInLocationToMove = null;
 				var timeOutTime = 0;
 
 				if (typeof timeOutCallBackFunction == "function") {
@@ -376,7 +375,6 @@ var Kartisky = function () {
 				function toRemoveAccept() {
 					accept = true;
 				}
-				acceptButton.addEventListener("click", toRemoveAccept);
 
 				var cancled = false;
 
@@ -384,16 +382,10 @@ var Kartisky = function () {
 					cancled = true;
 				}
 
-				cancelButton.addEventListener("click", toRemoveCancel);
+				var cancelEverything = false;
 
-				function toRemove() {
-					if (this.getAttribute("name") == "unchecked") {
-						this.setAttribute("name", "checkedID1");
-						this.style.backgroundColor = "red";
-					} else {
-						this.setAttribute("name", "unchecked");
-						this.style.backgroundColor = "";
-					}
+				function toRemoveCancelEverything() {
+					cancelEverything = true;
 				}
 
 				function toRemove2() {
@@ -413,17 +405,23 @@ var Kartisky = function () {
 						for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
 							visualBattleField.rows[i].cells[j].setAttribute("name", "unchecked");
 							visualBattleField.rows[i].cells[j].style.backgroundColor = "";
-							visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove);
 							visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove2);
 						}
 					}
 					acceptButton.removeEventListener("click", toRemoveAccept);
 					cancelButton.removeEventListener("click", toRemoveCancel);
+					everythingCancelButton.removeEventListener("click", toRemoveCancelEverything);
 					clearInterval(interval);
 				}
 
 				function getUserInput(place) {
-					visualBattleField.rows[place[0]].cells[place[1]].addEventListener("click", toRemove);
+					cancled = false;
+					cancelEverything = false;
+					accept = false;
+					acceptButton.addEventListener("click", toRemoveAccept);
+					cancelButton.addEventListener("click", toRemoveCancel);
+					everythingCancelButton.addEventListener("click", toRemoveCancelEverything);
+					visualBattleField.rows[place[0]].cells[place[1]].setAttribute("style", "background-color: red;");
 					var lu, mu, ru, l, r, ld, md, rd, tmp;
 					if (place[0] != 0 && place[1] != 0) {
 						if (virtualBattleField[place[0] - 1][place[1] - 1].owner == null)
@@ -480,48 +478,41 @@ var Kartisky = function () {
 						}
 					}
 
-					function controlWatchdog(location, locationBefore) {
+					function controlWatchdog(locationBefore) {
 						for (var i = 0; i < locationBefore.length; i++) {
 							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
 							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
 						}
 					}
 					interval = setInterval(function () {
-							location = getLocation("checkedID1");
 							locationToMove = getLocation("checkedID2");
-							if (location != null) {
-								if (location.length > 1) {
-									controlWatchdog(location, wereSelectedInLocation);
-								}
-							}
 							if (locationToMove != null) {
 								if (locationToMove.length > 1) {
-									controlWatchdog(locationToMove, wereSelectedInLocationToMove);
+									controlWatchdog(wereSelectedInLocationToMove);
 								}
 							}
-							wereSelectedInLocation = location;
 							wereSelectedInLocationToMove = locationToMove;
-							if (location != null && locationToMove != null) {
-								if (accept == true && virtualBattleField[location[0][0]][location[0][1]].card != null && virtualBattleField[locationToMove[0][0]][locationToMove[0][1]].cards == null) {
-									remove();
-									done.doneTask = true;
-									done.count += 1;
-									result.push({
-										from: place,
-										to: locationToMove[0]
-									});
-								}
+							if (locationToMove != null && accept == true) {
+								remove();
+								done.doneTask = true;
+								done.count += 1;
+								succesCallBackFunction({
+									from: place,
+									to: locationToMove[0]
+								});
+
 							}
 
 							if (cancled == true) {
 								remove();
 								done.doneTask = true;
 								done.count += 1;
-								result.push({
+								succesCallBackFunction({
 									from: place,
 									to: null
 								});
 							}
+
 							accept = false;
 							timeOutTime += 1;
 							if (timeOutTime > timeOut) {
@@ -529,7 +520,7 @@ var Kartisky = function () {
 								if (config.timeOut == true) {
 									done.doneTask = true;
 									done.count += 1;
-									result.push({
+									succesCallBackFunction({
 										from: place,
 										to: null
 									});
@@ -541,7 +532,6 @@ var Kartisky = function () {
 				}
 				var interval;
 				var cardPlaces = [];
-				var result = [];
 				var done = {
 					count: 0,
 					doneTask: true
@@ -550,7 +540,6 @@ var Kartisky = function () {
 					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
 						if (virtualBattleField[i][j].owner == player.id) {
 							cardPlaces.push([i, j]);
-							//							visualBattleField.rows[i].cells[j].addEventListener("click", toRemove);
 						}
 					}
 				}
@@ -566,10 +555,17 @@ var Kartisky = function () {
 							}
 						},
 						function () {
-							if(done.count + 1 == cardPlaces.length){
-								succesCallBackFunction(result);
+							if (done.count + 1 == cardPlaces.length) {
+								taskDoneCallBackFunction();
 								return true;
 							}
+						},
+						function () {
+							if (cancelEverything == true) {
+								remove();
+								cancelCallBack();
+								return true;
+							};
 						});
 				} else {
 					cancelCallBack("No units to move");
