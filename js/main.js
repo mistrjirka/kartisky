@@ -281,7 +281,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 		}, attack, attack, function (actual) {
 			console.log(actual);
 		}, function (a) {
-			alert("timeout movement")
+			alert("timeout movement");
 			attack();
 		});
 	}
@@ -295,6 +295,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 
 
 round(player1, "player1", "is", "accept", "cancel", "cancelaction");
+
 /*
 var player1;
 player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations));

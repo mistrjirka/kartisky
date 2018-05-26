@@ -387,6 +387,8 @@ var Kartisky = function () {
 				function toRemoveCancelEverything() {
 					cancelEverything = true;
 				}
+				everythingCancelButton.addEventListener("click", toRemoveCancelEverything);
+
 
 				function toRemove2() {
 					if (this.getAttribute("name") == "unchecked") {
@@ -420,7 +422,6 @@ var Kartisky = function () {
 					accept = false;
 					acceptButton.addEventListener("click", toRemoveAccept);
 					cancelButton.addEventListener("click", toRemoveCancel);
-					everythingCancelButton.addEventListener("click", toRemoveCancelEverything);
 					visualBattleField.rows[place[0]].cells[place[1]].setAttribute("style", "background-color: red;");
 					var lu, mu, ru, l, r, ld, md, rd, tmp;
 					if (place[0] != 0 && place[1] != 0) {
@@ -484,51 +485,271 @@ var Kartisky = function () {
 							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
 						}
 					}
-					interval = setInterval(function () {
-							locationToMove = getLocation("checkedID2");
-							if (locationToMove != null) {
-								if (locationToMove.length > 1) {
-									controlWatchdog(wereSelectedInLocationToMove);
-								}
+					async (33, timeOut, function () {
+						remove();
+						if (config.timeOut == true) {
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: null
+							});
+							remove();
+						}
+					}, function () {
+						locationToMove = getLocation("checkedID2");
+						if (locationToMove != null) {
+							if (locationToMove.length > 1) {
+								controlWatchdog(wereSelectedInLocationToMove);
 							}
-							wereSelectedInLocationToMove = locationToMove;
-							if (locationToMove != null && accept == true) {
-								remove();
-								done.doneTask = true;
-								done.count += 1;
-								succesCallBackFunction({
-									from: place,
-									to: locationToMove[0]
-								});
+						}
+						wereSelectedInLocationToMove = locationToMove;
+						if (locationToMove != null && accept == true) {
+							remove();
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: locationToMove[0]
+							});
+							return true;
 
-							}
+						}
 
-							if (cancled == true) {
-								remove();
-								done.doneTask = true;
-								done.count += 1;
-								succesCallBackFunction({
-									from: place,
-									to: null
-								});
-							}
+						if (cancled == true) {
+							remove();
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: null
+							});
+							return true;
+						}
 
-							accept = false;
-							timeOutTime += 1;
-							if (timeOutTime > timeOut) {
-								remove();
-								if (config.timeOut == true) {
-									done.doneTask = true;
-									done.count += 1;
-									succesCallBackFunction({
-										from: place,
-										to: null
-									});
-									remove();
-								}
+						accept = false;
+						timeOutTime += 1;
+					});
+				}
+				var interval;
+				var cardPlaces = [];
+				var done = {
+					count: 0,
+					doneTask: true
+				};
+				for (var i = 0; i < visualBattleField.rows.length; i++) {
+					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
+						if (virtualBattleField[i][j].owner == player.id) {
+							cardPlaces.push([i, j]);
+						}
+					}
+				}
+				if (cardPlaces.length != 0) {
+					async (33, timeOut, function () {
+							remove();
+							timeOutCallBackFunction();
+						}, function () {
+							if (done.doneTask == true) {
+								actualCard(cardPlaces[done.count]);
+								getUserInput(cardPlaces[done.count]);
+								done.doneTask = false;
 							}
 						},
-						33);
+						function () {
+							if (done.count + 1 == cardPlaces.length) {
+								taskDoneCallBackFunction();
+								return true;
+							}
+						},
+						function () {
+							if (cancelEverything == true) {
+								remove();
+								cancelCallBack();
+								return true;
+							};
+						});
+				} else {
+					cancelCallBack("No units to move");
+				}
+			} else {
+				console.log(
+					"Wrong value type"
+				);
+			}
+		},
+		playersMinionAttack: function (timeOut, virtualBattleField, visualBattleField, player, acceptButton, cancelButton, everythingCancelButton, succesCallBackFunction, taskDoneCallBackFunction, cancelCallBack, actualCard, timeOutCallBackFunction) {
+			if (Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof player == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number") {
+				var config = {
+					timeOut: false
+				}
+				var wereSelectedInLocation = null;
+				var locationToMove = null;
+				var wereSelectedInLocationToMove = null;
+				var timeOutTime = 0;
+
+				if (typeof timeOutCallBackFunction == "function") {
+					config.timeOut = true;
+				}
+				var accept = false;
+
+				function toRemoveAccept() {
+					accept = true;
+				}
+
+				var cancled = false;
+
+				function toRemoveCancel() {
+					cancled = true;
+				}
+
+				var cancelEverything = false;
+
+				function toRemoveCancelEverything() {
+					cancelEverything = true;
+				}
+				everythingCancelButton.addEventListener("click", toRemoveCancelEverything);
+
+
+				function toRemove2() {
+					if (this.getAttribute("name") == "unchecked") {
+						this.setAttribute("name", "checkedID2");
+						this.style.backgroundColor = "powderblue";
+
+					} else {
+						this.setAttribute("name", "unchecked");
+						this.style.backgroundColor = "";
+
+					}
+				}
+
+				function remove() {
+					for (var i = 0; i < visualBattleField.rows.length; i++) {
+						for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
+							visualBattleField.rows[i].cells[j].setAttribute("name", "unchecked");
+							visualBattleField.rows[i].cells[j].style.backgroundColor = "";
+							visualBattleField.rows[i].cells[j].removeEventListener("click", toRemove2);
+						}
+					}
+					acceptButton.removeEventListener("click", toRemoveAccept);
+					cancelButton.removeEventListener("click", toRemoveCancel);
+					everythingCancelButton.removeEventListener("click", toRemoveCancelEverything);
+					clearInterval(interval);
+				}
+
+				function getUserInput(place) {
+					cancled = false;
+					cancelEverything = false;
+					accept = false;
+					acceptButton.addEventListener("click", toRemoveAccept);
+					cancelButton.addEventListener("click", toRemoveCancel);
+					visualBattleField.rows[place[0]].cells[place[1]].setAttribute("style", "background-color: red;");
+					var lu, mu, ru, l, r, ld, md, rd, tmp;
+					if (place[0] != 0 && place[1] != 0) {
+						if (virtualBattleField[place[0] - 1][place[1] - 1].owner == null)
+							lu = [place[0] - 1, place[1] - 1];
+					}
+					if (place[0] != 0) {
+						if (virtualBattleField[place[0] - 1][place[1]].owner == null)
+							mu = [place[0] - 1, place[1]];
+					}
+					if (place[0] != 0 && place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0] - 1, place[1] + 1])
+							ru = [place[0] - 1, place[1] + 1];
+					}
+					if (place[1] != 0) {
+						if (virtualBattleField[place[0]][place[1] - 1].owner == null)
+							l = [place[0], place[1] - 1];
+					}
+					if (place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0]][place[1] + 1].owner == null)
+							r = [place[0], place[1] + 1];
+					}
+					if (place[0] != virtualBattleField.length - 1 && place[1] != 0) {
+						if (virtualBattleField[place[0] + 1][place[1] - 1].owner == null)
+							ld = [place[0] + 1, place[1] - 1];
+					}
+					if (place[0] != virtualBattleField.length - 1) {
+						if (virtualBattleField[place[0] + 1][place[1]].owner == null)
+							md = [place[0] + 1, place[1]];
+					}
+					if (place[0] != virtualBattleField.length - 1 && place[1] != virtualBattleField[0].length - 1) {
+						if (virtualBattleField[place[0] + 1][place[1] + 1].owner == null)
+							rd = [place[0] + 1, place[1] + 1];
+					}
+					tmp = [lu, mu, ru, r, l, ld, md, rd];
+					tmp.forEach(function (element, index, array) {
+						if (element != null)
+							visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
+					});
+
+					function getLocation(id) {
+						var cache = [];
+						for (var i = 0; i < visualBattleField.rows.length; i++) {
+							for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
+								if (visualBattleField.rows[i].cells[j].getAttribute("name") == id) {
+									cache.push([i, j]);
+								} else {}
+							}
+						}
+						if (typeof cache[0] == "undefined") {
+							return null;
+
+						} else {
+							return cache;
+						}
+					}
+
+					function controlWatchdog(locationBefore) {
+						for (var i = 0; i < locationBefore.length; i++) {
+							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
+							visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+						}
+					}
+					async (33, timeOut, function () {
+						remove();
+						if (config.timeOut == true) {
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: null
+							});
+							remove();
+						}
+					}, function () {
+						locationToMove = getLocation("checkedID2");
+						if (locationToMove != null) {
+							if (locationToMove.length > 1) {
+								controlWatchdog(wereSelectedInLocationToMove);
+							}
+						}
+						wereSelectedInLocationToMove = locationToMove;
+						if (locationToMove != null && accept == true) {
+							remove();
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: locationToMove[0]
+							});
+							return true;
+
+						}
+
+						if (cancled == true) {
+							remove();
+							done.doneTask = true;
+							done.count += 1;
+							succesCallBackFunction({
+								from: place,
+								to: null
+							});
+							return true;
+						}
+
+						accept = false;
+						timeOutTime += 1;
+					});
 				}
 				var interval;
 				var cardPlaces = [];
