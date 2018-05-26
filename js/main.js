@@ -265,19 +265,21 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 	function movement() {
 		console.log("movement");
 		newGame.get.playersMinionMovement(500, battleField, document.getElementById("is"), player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
-			var card = battleField[a.from[0]][a.from[1]].card;
-			battleField = newGame.do.removeFromBattleField(battleField, {
-				type: "coordinates",
-				coordinates: [a.from[1], a.from[0]]
-			});
-			newGame.do.editVirtualBattleField(battleField, [{
-				card: card,
-				location: {
-					x: a.to[1],
-					y: a.to[0]
-				}
+			if (a.to != null) {
+				var card = battleField[a.from[0]][a.from[1]].card;
+				battleField = newGame.do.removeFromBattleField(battleField, {
+					type: "coordinates",
+					coordinates: [a.from[1], a.from[0]]
+				});
+				newGame.do.editVirtualBattleField(battleField, [{
+					card: card,
+					location: {
+						x: a.to[1],
+						y: a.to[0]
+					}
         }], player);
-			newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+				newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+			}
 		}, attack, attack, function (actual) {
 			console.log(actual);
 		}, function (a) {
