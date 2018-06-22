@@ -790,10 +790,15 @@ var Kartisky = function () {
 							rd = [place[0] + 1, place[1] + 1];
 					}
 					tmp = [lu, mu, ru, r, l, ld, md, rd];
+					var nullCounter = 0;
 					tmp.forEach(function (element, index, array) {
-						if (element != null)
+						if (element != null) {
 							visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
+						} else {
+							nullCounter += 1;
+						};
 					});
+					if (nullCounter == tmp.length)
 
 					function getLocation(id) {
 						var cache = [];
@@ -871,7 +876,7 @@ var Kartisky = function () {
 				};
 				for (var i = 0; i < visualBattleField.rows.length; i++) {
 					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
-						if (virtualBattleField[i][j].owner == player.id) {
+						if (virtualBattleField[i][j].owner == player1.id) {
 							cardPlaces.push([i, j]);
 						}
 					}

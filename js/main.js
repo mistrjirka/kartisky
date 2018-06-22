@@ -290,6 +290,20 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 
 	function attack() {
 		console.log("attack");
+		var done = {
+			bool: true,
+			completleDone: false,
+			count: 0
+		};
+		newGame.do.attack(500, battleField, document.getElementById("is"), player, player2, acceptButton, cancelButton, cancelEverythingButton, function (a) {
+			alert(a);
+		}, function () {
+			alert("cancel");
+		}, function () {
+			alert("cancel everything");
+		}, function(actual){
+			console.log(actual);
+		}, alert);
 	}
 	roundItems();
 
