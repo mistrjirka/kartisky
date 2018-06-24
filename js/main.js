@@ -280,7 +280,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
         }], player);
 				newGame.do.virtualToVisual(battleField, document.getElementById("is"));
 			}
-		}, attack, attack, function (actual) {
+		}, function(){alert("akce1")}, function(){alert("akce2")}, function (actual) {
 			console.log(actual);
 		}, function (a) {
 			alert("timeout movement");
@@ -290,7 +290,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 
 	function attack() {
 		console.log("attack");
-		var done = {
+		/*var done = {
 			bool: true,
 			completleDone: false,
 			count: 0
@@ -303,13 +303,14 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 			alert("cancel everything");
 		}, function(actual){
 			console.log(actual);
-		}, alert);
+		}, alert);*/
 	}
 	roundItems();
 
 };
 
-
+battleField[1][0].owner = player2.id;
+battleField[1][0].card = nations[0].cards[0];
 round(player1, "player1", "is", "accept", "cancel", "cancelaction");
 
 /*

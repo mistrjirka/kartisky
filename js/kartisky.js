@@ -535,7 +535,8 @@ var Kartisky = function () {
 				var cardPlaces = [];
 				var done = {
 					count: 0,
-					doneTask: true
+					doneTask: true,
+					completed: false
 				};
 				for (var i = 0; i < visualBattleField.rows.length; i++) {
 					for (var j = 0; j < visualBattleField.rows[i].cells.length; j++) {
@@ -548,19 +549,23 @@ var Kartisky = function () {
 					async (33, timeOut, function () {
 							remove();
 							timeOutCallBackFunction();
-						}, function () {
-							if (done.doneTask == true) {
+						},
+						function () {
+							if (done.count == cardPlaces.length) {
+								taskDoneCallBackFunction();
+								remove();
+								done.completed = true;
+								return true;
+							}
+						},
+						function () {
+							if (done.doneTask == true && done.completed == false) {
 								actualCard(cardPlaces[done.count]);
 								getUserInput(cardPlaces[done.count]);
 								done.doneTask = false;
 							}
 						},
-						function () {
-							if (done.count + 1 == cardPlaces.length) {
-								taskDoneCallBackFunction();
-								return true;
-							}
-						},
+
 						function () {
 							if (cancelEverything == true) {
 								remove();
@@ -798,7 +803,6 @@ var Kartisky = function () {
 							nullCounter += 1;
 						};
 					});
-					if (nullCounter == tmp.length)
 
 					function getLocation(id) {
 						var cache = [];
@@ -885,19 +889,21 @@ var Kartisky = function () {
 					async (33, timeOut, function () {
 							remove();
 							timeOutCallBackFunction();
-						}, function () {
+						},
+						function () {
+							if (done.count == cardPlaces.length) {
+								taskDoneCallBackFunction();
+								return true;
+							}
+						},
+						function () {
 							if (done.doneTask == true) {
 								actualCard(cardPlaces[done.count]);
 								getUserInput(cardPlaces[done.count]);
 								done.doneTask = false;
 							}
 						},
-						function () {
-							if (done.count + 1 == cardPlaces.length) {
-								taskDoneCallBackFunction();
-								return true;
-							}
-						},
+
 						function () {
 							if (cancelEverything == true) {
 								remove();
