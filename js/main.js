@@ -1,4 +1,4 @@
-var nations = [{
+const nations = [{
     nation: "people",
     abilities: {
 
@@ -354,8 +354,8 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
                 console.log("attacking");
                 var attacker = battleField[a.from[0]][a.from[1]];
                 var sacrifice = battleField[a.to[0]][a.to[1]];
-                console.log(attacker.card);
-                console.log(sacrifice.card);
+                console.log(attacker);
+                console.log(sacrifice);
                 sacrifice.card.statistics.life -= attacker.card.statistics.attack;
                 if (sacrifice.card.statistics.life <= 0) {
                     console.log(sacrifice.card.statistics.life + " lives");
@@ -372,7 +372,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
                             x: a.to[1],
                             y: a.to[0]
                         }
-        }], player);
+        }], player2);
 
 
                 }
@@ -393,7 +393,10 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 };
 
 battleField[1][0].owner = player2.id;
-battleField[1][0].card = nations[0].cards[0];
+console.log(player2.id);
+battleField[1][0].card = player2.cards[0];
+player2.cards[0].statistics.life = 20;
+console.log(nations[0].cards[0].statistics.life)
 round(player1, "player1", "is", "accept", "cancel", "cancelaction");
 
 function endOfRound(player) {

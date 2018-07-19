@@ -1,3 +1,7 @@
+function copyObj(object){
+    return JSON.parse(JSON.stringify(object));
+}
+
 function findIndex(array, item) {
 	for (var i = 0; i < array.length; i++) {
 		if (item == array[i]) {
@@ -596,7 +600,7 @@ var Kartisky = function () {
 							if (typeof cards[0] == "number") {
 								var toBeReturned = [];
 								for (var j = 0; j < cards.length; j++) {
-									toBeReturned[j] = nations[i].cards[cards[j]];
+									toBeReturned[j] = copyObj(nations[i].cards[cards[j]]);
 								}
 								return toBeReturned;
 							} else {
@@ -685,7 +689,7 @@ var Kartisky = function () {
 				}
 				cardPack.push(arry[tmp]);
 			});
-			return cardPack;
+			return copyObj(cardPack);
 		},
 		virtualToVisual: function (virtualBattlefield, visualBattlefield) {
 			virtualBattlefield.forEach(function (element, index, array) {
@@ -757,6 +761,8 @@ var Kartisky = function () {
 				}
 
 				function getUserInput(place) {
+                    console.log("this is place");
+                    console.log(place);
 					cancled = false;
 					cancelEverything = false;
 					accept = false;
