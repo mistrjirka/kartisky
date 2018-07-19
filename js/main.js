@@ -395,8 +395,6 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 battleField[1][0].owner = player2.id;
 console.log(player2.id);
 battleField[1][0].card = player2.cards[0];
-player2.cards[0].statistics.life = 20;
-console.log(nations[0].cards[0].statistics.life)
 round(player1, "player1", "is", "accept", "cancel", "cancelaction");
 
 function endOfRound(player) {
