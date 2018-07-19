@@ -95,7 +95,9 @@ function async ( /**/ ) {
 }
 var Kartisky = function () {
 	this.add = {
-		player: function (cards, id = makeid()) {
+		player: function (cards, id) {
+            if(typeof id == "undefined")
+                id = makeid();
 			if (typeof cards == "object") {
 				return {
 					home: null,
@@ -897,7 +899,7 @@ var Kartisky = function () {
 							}
 						},
 						function () {
-							if (done.doneTask == true) {
+							if (done.doneTask == true && done.count != cardPlaces.length) {
 								actualCard(cardPlaces[done.count]);
 								getUserInput(cardPlaces[done.count]);
 								done.doneTask = false;

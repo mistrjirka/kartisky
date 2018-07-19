@@ -1,0 +1,4 @@
++ -to complete: Attack function
+- -to do example for attack function
++ -place error bug at attack method fix TypeError: place is undefined kartisky.js:765:6
+
