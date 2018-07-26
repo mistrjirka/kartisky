@@ -236,6 +236,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
     var cancelButton = document.getElementById(cancelButton);
     var visualBattleField = document.getElementById(visualBattleField)
     var cardsSelected = [];
+    console.log(visualBattleField)
     newGame.do.virtualToVisual(battleField, visualBattleField);
 
     function roundItems() {
@@ -287,7 +288,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                                         y: cardsSelected[done.count].y
                                     }
                                 }], player);
-                                newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                                newGame.do.virtualToVisual(battleField, visualBattleField);
                                 done.bool = true;
                                 done.count += 1;
                             },
@@ -313,7 +314,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
 
     function movement() {
         console.log("movement");
-        newGame.get.playersMinionMovement(400 * newGame.do.checkForAction(battleField, player), battleField, document.getElementById("is"), player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
+        newGame.get.playersMinionMovement(400 * newGame.do.checkForAction(battleField, player), battleField, visualBattleField, player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
             if (a.to != null) {
                 var card = battleField[a.from[0]][a.from[1]].card;
                 battleField = newGame.do.removeFromBattleField(battleField, {
@@ -327,7 +328,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                         y: a.to[0]
                     }
         }], player);
-                newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                newGame.do.virtualToVisual(battleField, visualBattleField);
             }
         }, function () {
             attack();
@@ -348,7 +349,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
             completleDone: false,
             count: 0
         };
-        newGame.do.attack(400 * newGame.do.checkForAction(battleField, player), battleField, document.getElementById("is"), player, enemyPlayer, acceptButton, cancelButton, cancelEverythingButton, function (a) {
+        newGame.do.attack(400 * newGame.do.checkForAction(battleField, player), battleField, visualBattleField, player, enemyPlayer, acceptButton, cancelButton, cancelEverythingButton, function (a) {
                 if (a.to != null) {
                     console.log("attacking");
                     var attacker = battleField[a.from[0]][a.from[1]];
@@ -382,7 +383,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                             }
                             }], player2);
                     }
-                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                    newGame.do.virtualToVisual(battleField, visualBattleField);
                     if (sacrifice.card.statistics.life <= 0) {
                         console.log(sacrifice.card.statistics.life + " lives");
                         battleField = newGame.do.removeFromBattleField(battleField, {
@@ -398,7 +399,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                                 y: a.to[0]
                             }}], player2);
                     }
-                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                    newGame.do.virtualToVisual(battleField, visualBattleField);
                 }
             },
             function () {
