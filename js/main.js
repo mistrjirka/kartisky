@@ -96,10 +96,6 @@ const nations = [{
     }]
 }];
 
-var weakpoints = [{
-    array: [1, 0.9, 0.8, 0.65, 0.5, 0.65, 0.8, 0.9],
-    id: "default"
-}];
 
 var newGame = new Kartisky();
 
@@ -181,45 +177,48 @@ var config = {
     }
 }
 
+var weakpoints = [{
+    array: [1, 0.9, 0.8, 0.65, 0.5, 0.65, 0.8, 0.9],
+    id: "default"
+}];
+
 function attackAngle(attacker, sacriface) { //stupid name for stupid function
     var lu, mu, ru, l, r, ld, md, rd, tmp;
-    if (place[0] != 0 && place[1] != 0) {
-        if (virtualBattleField[place[0] - 1][place[1] - 1].owner == null)
-            lu = [place[0] - 1, place[1] - 1];
-    }
-    if (place[0] != 0) {
-        if (virtualBattleField[place[0] - 1][place[1]].owner == null)
-            mu = [place[0] - 1, place[1]];
-    }
-    if (place[0] != 0 && place[1] != virtualBattleField[0].length - 1) {
-        if (virtualBattleField[place[0] - 1, place[1] + 1])
-            ru = [place[0] - 1, place[1] + 1];
-    }
-    if (place[1] != 0) {
-        if (virtualBattleField[place[0]][place[1] - 1].owner == null)
-            l = [place[0], place[1] - 1];
-    }
-    if (place[1] != virtualBattleField[0].length - 1) {
-        if (virtualBattleField[place[0]][place[1] + 1].owner == null)
-            r = [place[0], place[1] + 1];
-    }
-    if (place[0] != virtualBattleField.length - 1 && place[1] != 0) {
-        if (virtualBattleField[place[0] + 1][place[1] - 1].owner == null)
-            ld = [place[0] + 1, place[1] - 1];
-    }
-    if (place[0] != virtualBattleField.length - 1) {
-        if (virtualBattleField[place[0] + 1][place[1]].owner == null)
-            md = [place[0] + 1, place[1]];
-    }
-    if (place[0] != virtualBattleField.length - 1 && place[1] != virtualBattleField[0].length - 1) {
-        if (virtualBattleField[place[0] + 1][place[1] + 1].owner == null)
-            rd = [place[0] + 1, place[1] + 1];
-    }
+    console.log(attacker);
+    console.log(sacriface);
+    if (attacker[0] - 1 == sacriface[0] && attacker[1] - 1 == sacriface[1])
+        lu = [attacker[0] - 1, attacker[1] - 1];
+
+    if (attacker[0] - 1 == sacriface[0] && attacker[1] == sacriface[1])
+        mu = [attacker[0] - 1, attacker[1]];
+
+    if (attacker[0] - 1 == sacriface[0] && attacker[1] + 1 == sacriface[1])
+        ru = [attacker[0] - 1, attacker[1] + 1];
+
+    if (attacker[0] == sacriface[0] && attacker[1] - 1 == sacriface[1])
+        l = [attacker[0], attacker[1] - 1];
+
+    if (attacker[0] == sacriface[0] && attacker[1] + 1 == sacriface[1])
+        r = [attacker[0], attacker[1] + 1];
+
+    if (attacker[0] + 1 == sacriface[0] && attacker[1] - 1 == sacriface[1])
+        ld = [attacker[0] + 1, attacker[1] - 1];
+
+    if (attacker[0] + 1 == sacriface[0] && attacker[1] == sacriface[1])
+        md = [attacker[0] + 1, attacker[1]];
+
+    if (attacker[0] + 1 == sacriface[0] && attacker[1] + 1 == sacriface[1])
+        rd = [attacker[0] + 1, attacker[1] + 1];
+
     tmp = [lu, mu, ru, r, l, ld, md, rd];
+    var tmp2 = [7, 0, 1, 2, 6, 5, 4, 3];
+    var tmp3;
     tmp.forEach(function (element, index, array) {
         if (element != null)
-            visualBattleField.rows[element[0]].cells[element[1]].addEventListener("click", toRemove2);
+            tmp3 = tmp2[index]
     });
+
+    return tmp3;
 }
 
 var player1 = newGame.add.player(newGame.get.cardsByNation("people", "all", nations), "hrac1");
@@ -230,7 +229,7 @@ newGame.do.createBattlefield([4, 5], document.getElementById("player1"), "is", "
 player1.cardPack = newGame.do.makeCardPack(player1.cards);
 player2.cardPack = newGame.do.makeCardPack(player2.cards);
 
-function round(player, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton) {
+function round(player, enemyPlayer, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton) {
     var cancelEverythingButton = document.getElementById(cancelEverythingButton);
     var cardPlace = document.getElementById(place);
     var acceptButton = document.getElementById(confirmButton);
@@ -314,7 +313,7 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
 
     function movement() {
         console.log("movement");
-        newGame.get.playersMinionMovement(500, battleField, document.getElementById("is"), player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
+        newGame.get.playersMinionMovement(400 * newGame.do.checkForAction(battleField, player), battleField, document.getElementById("is"), player, acceptButton, cancelButton, cancelEverythingButton, function (a) {
             if (a.to != null) {
                 var card = battleField[a.from[0]][a.from[1]].card;
                 battleField = newGame.do.removeFromBattleField(battleField, {
@@ -349,53 +348,80 @@ function round(player, place, visualBattleField, confirmButton, cancelButton, ca
             completleDone: false,
             count: 0
         };
-        newGame.do.attack(500, battleField, document.getElementById("is"), player, player2, acceptButton, cancelButton, cancelEverythingButton, function (a) {
-            if (a.to != null) {
-                console.log("attacking");
-                var attacker = battleField[a.from[0]][a.from[1]];
-                var sacrifice = battleField[a.to[0]][a.to[1]];
-                console.log(attacker);
-                console.log(sacrifice);
-                sacrifice.card.statistics.life -= attacker.card.statistics.attack;
-                if (sacrifice.card.statistics.life <= 0) {
-                    console.log(sacrifice.card.statistics.life + " lives");
+        newGame.do.attack(400 * newGame.do.checkForAction(battleField, player), battleField, document.getElementById("is"), player, enemyPlayer, acceptButton, cancelButton, cancelEverythingButton, function (a) {
+                if (a.to != null) {
+                    console.log("attacking");
+                    var attacker = battleField[a.from[0]][a.from[1]];
+                    var sacrifice = battleField[a.to[0]][a.to[1]];
+                    console.log(attacker);
+                    console.log(sacrifice);
 
-                    battleField = newGame.do.removeFromBattleField(battleField, {
-                        type: "coordinates",
-                        coordinates: [a.to[1], a.to[0]]
-                    });
-                } else {
-                    console.log(sacrifice.card.statistics.life + " lives");
-                    newGame.do.editVirtualBattleField(battleField, [{
-                        card: sacrifice.card,
-                        location: {
-                            x: a.to[1],
-                            y: a.to[0]
+                    var angle = attackAngle(a.from, a.to);
+                    var weakpointMultiplier
+                    weakpoints.forEach(function (element, index, array) {
+                        if (sacrifice.card.statistics.weakpoints.mapID == element.id) {
+                            weakpointMultiplier = element.array[angle];
                         }
-        }], player2);
+                    });
 
+                    sacrifice.card.statistics.life -= attacker.card.statistics.attack;
+                    attacker.card.statistics.life -= sacrifice.card.statistics.attack * weakpointMultiplier;
 
+                    if (attacker.card.statistics.life <= 0) {
+                        battleField = newGame.do.removeFromBattleField(battleField, {
+                            type: "coordinates",
+                            coordinates: [a.from[1], a.from[0]]
+                        });
+                    } else {
+                        console.log(attacker.card.statistics.life + " lives");
+                        newGame.do.editVirtualBattleField(battleField, [{
+                            card: attacker.card,
+                            location: {
+                                x: a.from[1],
+                                y: a.from[0]
+                            }
+                            }], player2);
+                    }
+                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+                    if (sacrifice.card.statistics.life <= 0) {
+                        console.log(sacrifice.card.statistics.life + " lives");
+                        battleField = newGame.do.removeFromBattleField(battleField, {
+                            type: "coordinates",
+                            coordinates: [a.to[1], a.to[0]]
+                        });
+                    } else {
+                        console.log(sacrifice.card.statistics.life + " lives");
+                        newGame.do.editVirtualBattleField(battleField, [{
+                            card: sacrifice.card,
+                            location: {
+                                x: a.to[1],
+                                y: a.to[0]
+                            }}], player2);
+                    }
+                    newGame.do.virtualToVisual(battleField, document.getElementById("is"));
                 }
-                newGame.do.virtualToVisual(battleField, document.getElementById("is"));
+            },
+            function () {
 
-
-            }
-        }, function () {
-
-        }, function () {
-            alert("cancel everything");
-        }, function (actual) {
-            console.log(actual);
-        }, alert);
+            },
+            function () {
+                alert("cancel everything");
+            },
+            function (actual) {
+                console.log(actual);
+            }, alert);
     }
     roundItems();
 
 };
 
-battleField[1][0].owner = player2.id;
-console.log(player2.id);
-battleField[1][0].card = player2.cards[0];
-round(player1, "player1", "is", "accept", "cancel", "cancelaction");
+battleField[1][0].owner = player1.id;
+battleField[1][0].card = player1.cards[0];
+battleField[1][2].owner = player1.id;
+battleField[1][2].card = player1.cards[1];
+battleField[1][4].owner = player1.id;
+battleField[1][4].card = player1.cards[2];
+round(player2, player1,"player2", "is", "accept", "cancel", "cancelaction");
 
 function endOfRound(player) {
     console.log("end of round");

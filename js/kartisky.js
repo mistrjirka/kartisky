@@ -243,7 +243,7 @@ var Kartisky = function () {
 					{
 						type: "bottom",
 						position: visualBattleField.rows[visualBattleField.rows.length - 1],
-						row: visualBattleField.rows[visualBattleField.rows.length - 1]
+						row: visualBattleField.rows.length - 1
                     }
                 ];
 
@@ -779,7 +779,7 @@ var Kartisky = function () {
 							mu = [place[0] - 1, place[1]];
 					}
 					if (place[0] != 0 && place[1] != virtualBattleField[0].length - 1) {
-						if (virtualBattleField[place[0] - 1, place[1] + 1].owner == player2.id)
+						if (virtualBattleField[place[0] - 1][place[1] + 1].owner == player2.id)
 							ru = [place[0] - 1, place[1] + 1];
 					}
 					if (place[1] != 0) {
@@ -927,6 +927,17 @@ var Kartisky = function () {
 					"Wrong value type"
 				);
 			}
-		}
+		},
+        checkForAction: function(battlefield, player){
+            var bar = 0;
+            battlefield.forEach(function(element,index,array){
+                element.forEach(function(subElement,subIndex){
+                    if(subElement.owner == player.id){
+                       bar++; 
+                    }
+                });
+            });
+            return bar;
+        }
 	}
 }
