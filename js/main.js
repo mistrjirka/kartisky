@@ -147,7 +147,7 @@ function attackAngle(attacker, sacriface) { //stupid name for stupid function
     var tmp2 = [7, 0, 1, 2, 6, 5, 4, 3];
     var tmp3;
     tmp.forEach(function (element, index, array) {
-        if (element != null){
+        if (element != null) {
             tmp3 = tmp2[index];
         }
     });
@@ -218,9 +218,17 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
             count: 0
         };
         if (cardsSelected.length != 0) {
+            var cancelEverything = false;
+            var stop;
+
+            function cancelEverythingToRemove() {
+                cancelEverything = true;
+            }
+            cancelEverythingButton.addEventListener("click", cancelEverythingToRemove);
             async (33, 1000, function () {
                     alert("async timeout");
                     movement();
+                    cancelEverythingButton.removeEventListener("click", cancelEverythingToRemove);
                 }, function () {
                     if (cardsSelected.length > done.count && done.bool == true) {
                         Game.get.playerCardPlacement(1000, player.home, player, battleField, visualBattleField, acceptButton, cancelButton,
@@ -247,15 +255,30 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                             },
                             function (a) {
                                 alert(a + " ne");
-                            });
+                            },
+                            function (s) {
+                                stop = s;
+                            }
+                        );
                     }
                 },
                 function () {
                     if (cardsSelected.length <= done.count && done.bool == true) {
+                        cancelEverythingButton.removeEventListener("click", cancelEverythingToRemove);
                         movement();
                         return true;
+
                     }
                     done.bool = false;
+                },
+                function () {
+                    if (cancelEverything == true) {
+                        cancelEverythingButton.removeEventListener("click", cancelEverythingToRemove);
+                        stop();
+                        movement();
+
+                        return true;
+                    }
                 }
             );
         }
@@ -381,7 +404,7 @@ function endOfRound(player) {
     } else {
         playerPlaing = 0;
     }
-    
+
     round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
 }
 

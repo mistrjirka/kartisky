@@ -151,6 +151,8 @@ var Kartisky = function () {
                 timeOutFun = true;
             }
 
+
+
             //list part
             var idOfList = makeid().hashCode();
             var classOfCheckbox = makeid();
@@ -175,6 +177,7 @@ var Kartisky = function () {
             function cancelEvent() { //cancel button event lisenter call function
                 cancel = true;
             }
+
 
             acceptButton.addEventListener("click", acceptEvent);
             cancelButton.addEventListener("click", cancelEvent);
@@ -224,8 +227,8 @@ var Kartisky = function () {
                 }
 
                 if (cancel == true) {
-                    acceptButton.removeEventListener("click", acceptEvent);
                     cancelButton.removeEventListener("click", cancelEvent);
+                    acceptButton.removeEventListener("click", acceptEvent);
                     removeElement();
                     cancelCallBackFun();
                     return true;
@@ -240,8 +243,20 @@ var Kartisky = function () {
                 accept = false;
             });
         },
-        playerCardPlacement: function (timeOut, mode, player, virtualBattleField, visualBattleField, acceptButton, cancelButton, succesCallBackFunction, cancelCallbackFunction, timeOutCallbackFunction, notTaboo = [null], timeCallBackFunction) {
+        playerCardPlacement: function (timeOut, mode, player, virtualBattleField, visualBattleField, acceptButton, cancelButton, succesCallBackFunction, cancelCallbackFunction, timeOutCallbackFunction, stopReturningFunction, notTaboo, timeCallBackFunction) {
+
             if (typeof mode == "string" && Array.isArray(virtualBattleField) && typeof visualBattleField == "object" && typeof acceptButton == "object" && typeof succesCallBackFunction == "function" && typeof timeOut == "number" && typeof timeOutCallbackFunction == "function") {
+                notTaboo = [null];
+
+                var stopTrigger = false;
+
+                function stop() {
+                    stopTrigger = true;
+                }
+                if (typeof stopReturningFunction == "function") {
+                    stopReturningFunction(stop);
+                }
+
                 var modes = [
                     {
                         type: "top",
@@ -257,11 +272,13 @@ var Kartisky = function () {
 
                 var cancel = false;
 
+
                 function cancelToRemove() {
                     cancel = true;
                 }
 
-                cancelButton.addEventListener("click", cancelToRemove)
+
+                cancelButton.addEventListener("click", cancelToRemove);
 
                 function toRemove() {
                     if (this.getAttribute("name") == "unchecked") {
@@ -365,6 +382,10 @@ var Kartisky = function () {
                             cancelCallbackFunction();
                             remove();
                         };
+                        if (stopTrigger == true) {
+                            remove();
+                            return true;
+                        }
                     }
                 );
             } else {
