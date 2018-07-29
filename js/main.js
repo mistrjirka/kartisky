@@ -99,7 +99,7 @@ const nations = [{
 
 var Game = new Kartisky();
 
-var battleField = Game.get.battleField(8, 6);
+var battleField = Game.get.battleField(5, 5);
 console.log(battleField);
 
 var config = {
@@ -147,8 +147,9 @@ function attackAngle(attacker, sacriface) { //stupid name for stupid function
     var tmp2 = [7, 0, 1, 2, 6, 5, 4, 3];
     var tmp3;
     tmp.forEach(function (element, index, array) {
-        if (element != null)
-            tmp3 = tmp2[index]
+        if (element != null){
+            tmp3 = tmp2[index];
+        }
     });
 
     return tmp3;
@@ -159,8 +160,8 @@ var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations), 
 player1.home = "top";
 player2.home = "bottom";
 var playerPlaing = null;
-Game.do.createBattlefield([6, 8], document.getElementById("player1"), "is", "200px", "100px", "200px", "100px");
-Game.do.createBattlefield([6, 8], document.getElementById("player2"), "battle2", "200px", "100px", "200px", "100px");
+Game.do.createBattlefield([5, 5], document.getElementById("player1"), "is", "200px", "100px", "200px", "100px");
+Game.do.createBattlefield([5, 5], document.getElementById("player2"), "battle2", "200px", "100px", "200px", "100px");
 
 player1.cardPack = Game.do.makeCardPack(player1.cards);
 player2.cardPack = Game.do.makeCardPack(player2.cards);
@@ -306,7 +307,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                     console.log(sacrifice);
 
                     var angle = attackAngle(a.from, a.to);
-                    var weakpointMultiplier
+                    var weakpointMultiplier;
                     weakpoints.forEach(function (element, index, array) {
                         if (sacrifice.card.statistics.weakpoints.mapID == element.id) {
                             weakpointMultiplier = element.array[angle];
@@ -329,9 +330,8 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                                 x: a.from[1],
                                 y: a.from[0]
                             }
-                            }], player2);
+                            }], player);
                     }
-                    Game.do.virtualToVisual(battleField, visualBattleField);
                     if (sacrifice.card.statistics.life <= 0) {
                         console.log(sacrifice.card.statistics.life + " lives");
                         battleField = Game.do.removeFromBattleField(battleField, {
@@ -346,7 +346,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                                 x: a.to[1],
                                 y: a.to[0]
                             }
-                        }], player2);
+                        }], enemyPlayer);
                     }
                     Game.do.virtualToVisual(battleField, visualBattleField);
                 }
@@ -381,27 +381,28 @@ function endOfRound(player) {
     } else {
         playerPlaing = 0;
     }
+    
     round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
 }
 
 var playerSet = [
     {
-        player: player2,
-        enemyPlayer: player1,
-        place: "player1",
-        visualBattleField: "is",
-        accept: "accept",
-        cancel: "cancel",
-        cancelEverethinig: "cancelaction"
-    },
-    {
         player: player1,
         enemyPlayer: player2,
+        place: "player1",
+        visualBattleField: "is",
+        accept: "accept1",
+        cancel: "cancel1",
+        cancelEverethinig: "cancelaction1"
+    },
+    {
+        player: player2,
+        enemyPlayer: player1,
         place: "player2",
         visualBattleField: "battle2",
-        accept: "accept",
-        cancel: "cancel",
-        cancelEverethinig: "cancelaction"
+        accept: "accept2",
+        cancel: "cancel2",
+        cancelEverethinig: "cancelaction2"
     }
 ];
 
