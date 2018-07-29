@@ -515,9 +515,11 @@ var Kartisky = function () {
                     }
 
                     function controlWatchdog(locationBefore) {
-                        for (var i = 0; i < locationBefore.length; i++) {
-                            visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
-                            visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+                        if (locationBefore != null) {
+                            for (var i = 0; i < locationBefore.length; i++) {
+                                visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
+                                visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+                            }
                         }
                     }
                     async (33, timeOut, function () {
@@ -810,7 +812,6 @@ var Kartisky = function () {
                     console.log("this is place");
                     console.log(place);
                     cancled = false;
-                    cancelEverything = false;
                     accept = false;
                     acceptButton.addEventListener("click", toRemoveAccept);
                     cancelButton.addEventListener("click", toRemoveCancel);
@@ -876,9 +877,11 @@ var Kartisky = function () {
                     }
 
                     function controlWatchdog(locationBefore) {
-                        for (var i = 0; i < locationBefore.length; i++) {
-                            visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
-                            visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+                        if (locationBefore != null) {
+                            for (var i = 0; i < locationBefore.length; i++) {
+                                visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].setAttribute("name", "unchecked")
+                                visualBattleField.rows[locationBefore[i][0]].cells[locationBefore[i][1]].style.backgroundColor = "";
+                            }
                         }
                     }
                     async (33, timeOut, function () {

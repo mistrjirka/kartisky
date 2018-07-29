@@ -305,7 +305,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
         }, function () {
             attack();
         }, function () {
-            alert("akce2");
+            attack();
         }, function (actual) {
             console.log(actual);
         }, function (a) {
