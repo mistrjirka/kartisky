@@ -156,6 +156,7 @@ var Kartisky = function () {
             var classOfCheckbox = makeid();
             var checkboxList = document.createElement("ul");
             var li = document.createElement("li");
+            console.log(player.hand.cards);
             for (var i = 0; player.hand.cards.length > i; i++) {
                 li.innerHTML = "<input type='checkbox' class= '" + classOfCheckbox + "'>" + player.hand.cards[i].name + " class: " + player.hand.cards[i].statistics.class + " damage: " + player.hand.cards[i].statistics.attack + " life " + player.hand.cards[i].statistics.life;
                 checkboxList.appendChild(li);

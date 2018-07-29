@@ -179,9 +179,16 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
 
     function roundItems() {
         player.hand.money += config.round.money;
-        for (var i = 1; config.round.amountOfCards >= i; i++) {
-            player.hand.cards.push(player.cardPack[0]);
-            player.cardPack.shift();
+        if (config.round.amountOfCards > player.cardPack.length) {
+            player.cardPack.forEach(function () {
+                player.hand.cards.push(player.cardPack[0]);
+                player.cardPack.shift();
+            });
+        } else {
+            for (var i = 1; config.round.amountOfCards >= i; i++) {
+                player.hand.cards.push(player.cardPack[0]);
+                player.cardPack.shift();
+            }
         }
         getCards();
     };
@@ -226,9 +233,9 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                                         y: copyObj(cardsSelected[done.count].y)
                                     }
                                 }], player);
-                            
-                                player.hand.cards.splice(findIndexOfObject(player.hand.cards, cardsSelected[done.count].card),1);
-                            
+
+                                player.hand.cards.splice(findIndexOfObject(player.hand.cards, cardsSelected[done.count].card), 1);
+
                                 Game.do.virtualToVisual(battleField, visualBattleField);
                                 done.bool = true;
                                 done.count += 1;
