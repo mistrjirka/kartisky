@@ -1,4 +1,10 @@
 + -to complete: Attack function
-- -to do example for attack function
++ -to do example for attack function
 + -place error bug at attack method fix TypeError: place is undefined kartisky.js:765:6
+
+# bugs
+- repair bad array management in player.gand.cards
+- movement graphics corection error
+
+# feature
 
