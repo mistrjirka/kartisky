@@ -1025,11 +1025,18 @@ var Kartisky = function () {
             socket.emit("authentification", {id: getCookie("id")});
         },
         
-        whoStart: function(callBack){
+        start: function(callBack){
+            alert("ahoj")
             socket.on("init", function(data){
+                alert();
                 console.log(data);
                 callBack(data);
             });
+        },
+        
+        playerDataSync: function(player, callback){
+            socket.emit("info", player);
+            socket.on("enemy", callback);
         }
     }
 }

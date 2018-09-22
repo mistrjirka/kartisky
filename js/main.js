@@ -156,15 +156,15 @@ function attackAngle(attacker, sacriface) { //stupid name for stupid function
 }
 
 var player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac1");
-var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac2");
+//var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac2");
 player1.home = "top";
-player2.home = "bottom";
+//player2.home = "bottom";
 var playerPlaing = null;
 Game.do.createBattlefield([5, 5], document.getElementById("player1"), "is", "200px", "100px", "200px", "100px");
-Game.do.createBattlefield([5, 5], document.getElementById("player2"), "battle2", "200px", "100px", "200px", "100px");
+//Game.do.createBattlefield([5, 5], document.getElementById("player2"), "battle2", "200px", "100px", "200px", "100px");
 
 player1.cardPack = Game.do.makeCardPack(player1.cards);
-player2.cardPack = Game.do.makeCardPack(player2.cards);
+//player2.cardPack = Game.do.makeCardPack(player2.cards);
 
 function round(player, enemyPlayer, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton, whoPlay) {
     var whoPlay = document.getElementById(whoPlay);
@@ -409,45 +409,27 @@ function endOfRound(player) {
     round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
 }
 
-var playerSet = [
-    {
-        player: player1,
-        enemyPlayer: player2,
-        place: "player1",
-        visualBattleField: "is",
-        accept: "accept1",
-        cancel: "cancel1",
-        cancelEverethinig: "cancelaction1"
-    },
-    {
-        player: player2,
-        enemyPlayer: player1,
-        place: "player2",
-        visualBattleField: "battle2",
-        accept: "accept2",
-        cancel: "cancel2",
-        cancelEverethinig: "cancelaction2"
-    }
-];
+
 
 function multiplayer(callback) {
-    Game.multiplayer.init("/socket.io/socket.io.js", function(){
-        Game.multiplayer.whoStart(function(data){
+    Game.multiplayer.init("/socket.io/socket.io.js", function () {
+        Game.multiplayer.loginSetup();
+        Game.multiplayer.start(function (data) {
             
         });
-        Game.multiplayer.loginSetup();
-        
+
         callback();
     });
-    
+
 }
 
 window.onload = function () {
     var firstPlayer = Math.floor((Math.random() * 2) + 1);
-    
+
     multiplayer(function () {
-        round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
-        playerPlaing = firstPlayer - 1;
+        console.log("start")
+        /*round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
+        playerPlaing = firstPlayer - 1;*/
     });
 }
 

@@ -45,12 +45,12 @@
     <button id="cancel1">cancel</button>
     <button id="cancelaction1">cancel Action</button>
     <button id="skipround1">skip round</button>
-    <div id="player2">
+    <!--<div id="player2">
     </div>
     <button id="accept2">accept</button>
     <button id="cancel2">cancel</button>
     <button id="cancelaction2">cancel Action</button>
-    <button id="skipround2">skip round</button>
+    <button id="skipround2">skip round</button>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/kartisky.js"></script>
