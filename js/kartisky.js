@@ -1009,7 +1009,7 @@ var Kartisky = function () {
     }
 
     this.multiplayer = {
-        init: function(adress, callback) {
+        init: function (adress, callback) {
             if (typeof adress == "string") {
                 $.getScript(adress, function () {
                     socket = io();
@@ -1022,19 +1022,19 @@ var Kartisky = function () {
         },
 
         loginSetup: function () {
-            socket.emit("authentification", {id: getCookie("id")});
+            socket.emit("authentification", {
+                id: getCookie("id")
+            });
         },
-        
-        start: function(callBack){
-            alert("ahoj")
-            socket.on("init", function(data){
-                alert();
+
+        start: function (callBack) {
+            socket.on("init", function (data) {
                 console.log(data);
                 callBack(data);
             });
         },
-        
-        playerDataSync: function(player, callback){
+
+        playerDataSync: function (player, callback) {
             socket.emit("info", player);
             socket.on("enemy", callback);
         }

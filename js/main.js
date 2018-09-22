@@ -96,6 +96,21 @@ const nations = [{
     }]
 }];
 
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
 var Game = new Kartisky();
 
@@ -155,7 +170,7 @@ function attackAngle(attacker, sacriface) { //stupid name for stupid function
     return tmp3;
 }
 
-var player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac1");
+var player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations), getCookie("username"));
 //var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac2");
 player1.home = "top";
 //player2.home = "bottom";
@@ -412,13 +427,17 @@ function endOfRound(player) {
 
 
 function multiplayer(callback) {
+    var player2;
     Game.multiplayer.init("/socket.io/socket.io.js", function () {
         Game.multiplayer.loginSetup();
         Game.multiplayer.start(function (data) {
-            
+            Game.multiplayer.playerDataSync(player1, function (data) {
+                player2 = data;
+                
+            });
         });
 
-        callback();
+        
     });
 
 }
@@ -427,7 +446,7 @@ window.onload = function () {
     var firstPlayer = Math.floor((Math.random() * 2) + 1);
 
     multiplayer(function () {
-        console.log("start")
+        console.log("start");
         /*round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
         playerPlaing = firstPlayer - 1;*/
     });

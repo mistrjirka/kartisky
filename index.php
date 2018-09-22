@@ -38,6 +38,7 @@
 
     </style>
     <h1>Kartišky</h1>
+    <a href="/login/logout.php">logout</a>
     <h3 id="whoPlay">Who is playing</h3>
     <div id="player1">
     </div>
