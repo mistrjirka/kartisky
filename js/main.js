@@ -404,15 +404,6 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
 
 };
 
-/*battleField[1][0].owner = player1.id;
-battleField[1][0].card = player1.cards[0];
-battleField[1][2].owner = player1.id;
-battleField[1][2].card = player1.cards[1];
-battleField[1][4].owner = player1.id;
-battleField[1][4].card = player1.cards[2];
-//round(player2, player1,"player2", "battle2", "accept", "cancel", "cancelaction");
-*/
-
 function endOfRound(player) {
     console.log("end of round");
     if (playerPlaing == 0) {
@@ -421,7 +412,7 @@ function endOfRound(player) {
         playerPlaing = 0;
     }
 
-    round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
+    //round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
 }
 
 
@@ -454,65 +445,7 @@ window.onload = function () {
         playerPlaing = firstPlayer - 1;*/
     });
 }
-
-
-
-/*
-var player1;
-player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations));
-
-player1.hand.cards = player1.cards;
-//console.log(Game.add.cardsTo(player1, Game.get.cardsByNation("people", "all", nations), document.getElementById("player2")))
-console.log(Game.get.playerCardMove(500, {
-    id: "player1",
-    button: "butt"
-}, player1, function (a) {
-    alert(a);
-}, function () {
-    alert("sda");
-}));
-/*
-console.log(Game.do.editVirtualBattleField(battleField, [{
-    location: {
-        x: 2,
-        y: 4
-    },
-    card: {
-        owner: "player",
-        card: Game.get.cardsByNation("people", [0], nations)[0]
-    }0
-}]))
-
-battleField = Game.do.formatVirtualBattlefield(battleField);
-var player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations));
-var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations));
-battleField[0][0].owner = player1.id;
-battleField[0][1].owner = player1.id;
-battleField[0][3].owner = player1.id;
-battleField[0][2].owner = player1.id;
-
-battleField[1][0].owner = player2.id;
-battleField[1][1].owner = player2.id;
-battleField[1][3].owner = player2.id;
-battleField[1][2].owner = player2.id;
-
-Game.do.createBattlefield([4, 5], document.getElementById("player2"), "is", "100px", "100px", "100px", "100px");
-
-Game.do.attack(500, battleField, document.getElementById("is"), player2, player1,document.getElementById("butt"), function () {
     alert("jo");
 }, function () {
     alert("nope");
 });
-
-/*Game.get.playerCardPlacement("top", battleField, document.getElementById("is"), "player", document.getElementById("butt"), 1000, function () {
-    alert("haha")
-}, function () {
-    alert("ahoj")
-})
-/*Game.get.playersMinionMovement(battleField, document.getElementById("is"), "player", document.getElementById("butt"), 500, function (a,b) {
-    alert(a + " " + b);
-}, function () {
-    alert("hehe")
-})
-
-*/

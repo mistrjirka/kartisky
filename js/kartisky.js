@@ -1037,6 +1037,14 @@ var Kartisky = function () {
         playerDataSync: function (player, callback) {
             socket.emit("info", player);
             socket.on("enemy", callback);
+        },
+        
+        turn: function(callback){
+            socket.on("turn", callback);
+        },
+        
+        endOfTurn: function(player, battleField){
+            socket.emit("end",{player: player, battlefield: battleField})
         }
     }
 }
