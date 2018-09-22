@@ -114,8 +114,8 @@ function getCookie(cname) {
 
 var Game = new Kartisky();
 
-var battleField = Game.get.battleField(5, 5);
-console.log(battleField);
+//var battleField = Game.get.battleField(5, 5);
+//console.log(battleField);
 
 var config = {
     round: {
@@ -172,7 +172,7 @@ function attackAngle(attacker, sacriface) { //stupid name for stupid function
 
 var player1 = Game.add.player(Game.get.cardsByNation("people", "all", nations), getCookie("username"));
 //var player2 = Game.add.player(Game.get.cardsByNation("people", "all", nations), "hrac2");
-player1.home = "top";
+
 //player2.home = "bottom";
 var playerPlaing = null;
 Game.do.createBattlefield([5, 5], document.getElementById("player1"), "is", "200px", "100px", "200px", "100px");
@@ -430,8 +430,11 @@ function multiplayer(callback) {
     var player2;
     Game.multiplayer.init("/socket.io/socket.io.js", function () {
         Game.multiplayer.loginSetup();
-        Game.multiplayer.start(function (data) {
+        Game.multiplayer.start(function (side) {
+            player1.home = side;
+            console.log(side);
             Game.multiplayer.playerDataSync(player1, function (data) {
+                player1.home = "top";
                 player2 = data;
                 
             });
