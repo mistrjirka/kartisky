@@ -312,6 +312,15 @@ var Kartisky = function () {
                     for (var i = 0; modes.length > i; i++) {
                         if (modes[i].type == mode) {
                             for (var j = 0; modes[i].position.cells.length > j; j++) {
+                                console.log("virtualbattlefield")
+                                console.log(virtualBattleField);
+                                console.log("modes");
+                                console.log(modes);
+                                console.log("index");
+                                console.log(i + " " + j);
+                                console.log("error")
+                                console.log(virtualBattleField[modes[i].row][j])
+
                                 if (virtualBattleField[modes[i].row][j].owner != player.id) {
                                     modes[i].position.cells[j].setAttribute("name", "unchecked");
                                     modes[i].position.cells[j].addEventListener("click", toRemove);
@@ -1038,13 +1047,16 @@ var Kartisky = function () {
             socket.emit("info", player);
             socket.on("enemy", callback);
         },
-        
-        turn: function(callback){
+
+        turn: function (callback) {
             socket.on("turn", callback);
         },
-        
-        endOfTurn: function(player, battleField){
-            socket.emit("end",{player: player, battlefield: battleField})
+
+        endOfTurn: function (player, battleField) {
+            socket.emit("end", {
+                player: player,
+                battlefield: battleField
+            });
         }
     }
 }

@@ -114,7 +114,7 @@ function getCookie(cname) {
 
 var Game = new Kartisky();
 
-//var battleField = Game.get.battleField(5, 5);
+var battleField = []; // = Game.get.battleField(5, 5);
 //console.log(battleField);
 
 var config = {
@@ -181,7 +181,7 @@ Game.do.createBattlefield([5, 5], document.getElementById("player1"), "is", "200
 player1.cardPack = Game.do.makeCardPack(player1.cards);
 //player2.cardPack = Game.do.makeCardPack(player2.cards);
 
-function round(player, enemyPlayer, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton, whoPlay) {
+function round(player, enemyPlayer, place, visualBattleField, confirmButton, cancelButton, cancelEverythingButton, battleField, whoPlay) {
     var whoPlay = document.getElementById(whoPlay);
     var cancelEverythingButton = document.getElementById(cancelEverythingButton);
     var cardPlace = document.getElementById(place);
@@ -189,6 +189,7 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
     var cancelButton = document.getElementById(cancelButton);
     var visualBattleField = document.getElementById(visualBattleField);
     var cardsSelected = [];
+    console.log(battleField);
     Game.do.virtualToVisual(battleField, visualBattleField);
 
     whoPlay.innerHTML = player.id;
@@ -390,10 +391,10 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
                 }
             },
             function () {
-                endOfRound();
+                endOfRound(battleField);
             },
             function () {
-                endOfRound();
+                endOfRound(battleField);
                 alert("cancel everything");
             },
             function (actual) {
@@ -404,14 +405,10 @@ function round(player, enemyPlayer, place, visualBattleField, confirmButton, can
 
 };
 
-function endOfRound(player) {
+function endOfRound(battleField) {
     console.log("end of round");
-    if (playerPlaing == 0) {
-        playerPlaing = 1;
-    } else {
-        playerPlaing = 0;
-    }
 
+    Game.multiplayer.endOfTurn(player1, battleField)
     //round(playerSet[playerPlaing].player, playerSet[playerPlaing].enemyPlayer, playerSet[playerPlaing].place, playerSet[playerPlaing].visualBattleField, playerSet[playerPlaing].accept, playerSet[playerPlaing].cancel, playerSet[playerPlaing].cancelEverethinig, "whoPlay");
 }
 
@@ -424,14 +421,17 @@ function multiplayer(callback) {
         Game.multiplayer.start(function (side) {
             player1.home = side;
             console.log(side);
-            Game.multiplayer.playerDataSync(player1, function (data) {
-                player1.home = "top";
-                player2 = data;
-                
+            Game.multiplayer.playerDataSync(player1, function () {
+                Game.multiplayer.turn(function (data) {
+                    console.log(data);
+                    player2 = data.enemy;
+                    callback(player2, data.battlefield);
+                });
+
             });
         });
 
-        
+
     });
 
 }
@@ -439,13 +439,10 @@ function multiplayer(callback) {
 window.onload = function () {
     var firstPlayer = Math.floor((Math.random() * 2) + 1);
 
-    multiplayer(function () {
+    multiplayer(function (enemy, battleField) {
         console.log("start");
+        round(player1, enemy, "player1", "is", "accept1", "cancel1", "cancelaction1", battleField, "whoPlay")
         /*round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
         playerPlaing = firstPlayer - 1;*/
     });
 }
-    alert("jo");
-}, function () {
-    alert("nope");
-});
