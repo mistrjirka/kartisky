@@ -397,6 +397,7 @@ battleField[1][4].owner = player1.id;
 battleField[1][4].card = player1.cards[2];
 //round(player2, player1,"player2", "battle2", "accept", "cancel", "cancelaction");
 */
+
 function endOfRound(player) {
     console.log("end of round");
     if (playerPlaing == 0) {
@@ -429,12 +430,28 @@ var playerSet = [
     }
 ];
 
+function multiplayer(callback) {
+    Game.multiplayer.init("/socket.io/socket.io.js", function(){
+        Game.multiplayer.whoStart(function(data){
+            
+        });
+        Game.multiplayer.loginSetup();
+        
+        callback();
+    });
+    
+}
+
 window.onload = function () {
     var firstPlayer = Math.floor((Math.random() * 2) + 1);
-
-    round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
-    playerPlaing = firstPlayer - 1;
+    
+    multiplayer(function () {
+        round(playerSet[firstPlayer - 1].player, playerSet[firstPlayer - 1].enemyPlayer, playerSet[firstPlayer - 1].place, playerSet[firstPlayer - 1].visualBattleField, playerSet[firstPlayer - 1].accept, playerSet[firstPlayer - 1].cancel, playerSet[firstPlayer - 1].cancelEverethinig, "whoPlay");
+        playerPlaing = firstPlayer - 1;
+    });
 }
+
+
 
 /*
 var player1;

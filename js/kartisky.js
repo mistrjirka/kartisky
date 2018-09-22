@@ -105,6 +105,24 @@ function async ( /**/ ) {
 
 }
 var Kartisky = function () {
+    var socket;
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
     this.add = {
         player: function (cards, id) {
             if (typeof id == "undefined")
@@ -987,6 +1005,31 @@ var Kartisky = function () {
                 });
             });
             return bar;
+        }
+    }
+
+    this.multiplayer = {
+        init: function(adress, callback) {
+            if (typeof adress == "string") {
+                $.getScript(adress, function () {
+                    socket = io();
+                    callback();
+                });
+            } else if (typeof adress == "object") {
+                socket = adress;
+                callback();
+            }
+        },
+
+        loginSetup: function () {
+            socket.emit("authentification", {id: getCookie("id")});
+        },
+        
+        whoStart: function(callBack){
+            socket.on("init", function(data){
+                console.log(data);
+                callBack(data);
+            });
         }
     }
 }
